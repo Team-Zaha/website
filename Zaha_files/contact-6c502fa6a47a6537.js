@@ -1,0 +1,2 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9905],{88829:function(n,t,c){(window.__NEXT_P=window.__NEXT_P||[]).push(["/collective/[collectiveSlug]/contact",function(){return c(14179)}])},14179:function(n,t,c){"use strict";c.r(t),c.d(t,{__N_SSP:function(){return _}});var e=c(99366),u=c(40694),_=!0;t.default=n=>{let{collective:t}=n;return(0,e.tZ)(u.w,{collective:t})}}},function(n){n.O(0,[694,9774,2888,179],function(){return n(n.s=88829)}),_N_E=n.O()}]);
+//# sourceMappingURL=contact-6c502fa6a47a6537.js.map

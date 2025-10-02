@@ -1,2 +1,3 @@
-.claude
-.idea
+index.html.backup
+*.backup
+.DS_Store

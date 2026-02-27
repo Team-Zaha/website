@@ -1,7 +1,14 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useCallback } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring,
+  useMotionTemplate,
+} from "framer-motion";
 import { MagneticButton } from "@/components/shared/MagneticButton";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
@@ -31,201 +38,231 @@ function ZahaLogo({ className }: { className?: string }) {
   );
 }
 
-/* ─── Animated blob ─── */
-interface BlobProps {
-  color: string;
-  size: string;
-  top: string;
-  left: string;
-  duration: number;
+/* ─── Clip-reveal wrapper (text slides up from below) ─── */
+function ClipReveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
   delay?: number;
-  path: { x: string[]; y: string[] };
+  className?: string;
+}) {
+  return (
+    <div className={`overflow-hidden ${className ?? ""}`}>
+      <motion.div
+        initial={{ y: "110%" }}
+        animate={{ y: "0%" }}
+        transition={{
+          duration: 1.1,
+          delay,
+          ease: [0.77, 0, 0.175, 1],
+        }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
 }
 
-function GradientBlob({ color, size, top, left, duration, delay = 0, path }: BlobProps) {
+/* ─── Infinite horizontal marquee ─── */
+function Marquee() {
+  const services = [
+    "Architecture logicielle",
+    "Développement web",
+    "UX/UI Design",
+    "Applications Shopify",
+    "React & Next.js",
+    "Design System",
+    "E-commerce",
+    "Performance",
+  ];
+
   return (
-    <motion.div
-      className="absolute rounded-full"
-      style={{
-        width: size,
-        height: size,
-        top,
-        left,
-        background: `radial-gradient(circle at center, ${color} 0%, transparent 70%)`,
-        willChange: "transform",
-      }}
-      animate={{ x: path.x, y: path.y }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: "easeInOut",
-      }}
-    />
+    <div className="relative overflow-hidden border-y border-white/10 py-3 md:py-4">
+      <div className="marquee-track flex whitespace-nowrap">
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            className="flex shrink-0 items-center gap-6 pr-6 md:gap-10 md:pr-10"
+          >
+            {services.map((s) => (
+              <span
+                key={`${i}-${s}`}
+                className="flex items-center gap-6 text-sm font-medium uppercase tracking-[0.2em] text-zaha-orange/50 md:gap-10 md:text-base"
+              >
+                {s}
+                <span className="text-zaha-beige/20">&#x25C6;</span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
 /* ─── Hero Home ─── */
 export function HeroHome() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
 
+  /* Scroll-based parallax */
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
   const contentY = useTransform(
-    scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -150]
+    scrollYProgress,
+    [0, 1],
+    isMobile ? [0, 0] : [0, -120]
   );
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const bgScale = useTransform(
-    scrollYProgress, [0, 1], isMobile ? [1, 1] : [1, 1.2]
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  /* Mouse spotlight */
+  const mx = useMotionValue(0.5);
+  const my = useMotionValue(0.5);
+  const smx = useSpring(mx, { stiffness: 40, damping: 25 });
+  const smy = useSpring(my, { stiffness: 40, damping: 25 });
+  const spotX = useTransform(smx, (v) => v * 100);
+  const spotY = useTransform(smy, (v) => v * 100);
+  const spotlightBg = useMotionTemplate`radial-gradient(900px circle at ${spotX}% ${spotY}%, rgba(232,122,58,0.07) 0%, transparent 70%)`;
+
+  const handleMouse = useCallback(
+    (e: React.MouseEvent) => {
+      const r = containerRef.current?.getBoundingClientRect();
+      if (!r) return;
+      mx.set((e.clientX - r.left) / r.width);
+      my.set((e.clientY - r.top) / r.height);
+    },
+    [mx, my]
   );
 
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-svh items-center justify-center overflow-hidden bg-[#1a3a28]"
+      onMouseMove={handleMouse}
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-[#0c1f15]"
     >
-      {/* Animated mesh gradient blobs */}
-      <motion.div
-        className="pointer-events-none absolute inset-[-50%] blur-[80px] md:blur-[120px]"
-        style={{ scale: bgScale, willChange: "transform" }}
-      >
-        <GradientBlob
-          color="rgba(45, 90, 61, 0.9)"
-          size="70vmax"
-          top="10%"
-          left="0%"
-          duration={23}
-          path={{ x: ["0%", "30%", "-10%"], y: ["0%", "25%", "-15%"] }}
+      {/* Mouse spotlight overlay */}
+      {!isMobile && (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: spotlightBg }}
         />
-        <GradientBlob
-          color="rgba(74, 124, 92, 0.85)"
-          size="55vmax"
-          top="-10%"
-          left="40%"
-          duration={19}
-          delay={2}
-          path={{ x: ["0%", "-35%", "15%"], y: ["0%", "30%", "10%"] }}
-        />
-        <GradientBlob
-          color="rgba(232, 122, 58, 0.8)"
-          size="50vmax"
-          top="50%"
-          left="-10%"
-          duration={17}
-          delay={4}
-          path={{ x: ["0%", "45%", "20%"], y: ["0%", "-30%", "15%"] }}
-        />
-        <GradientBlob
-          color="rgba(240, 154, 94, 0.7)"
-          size="40vmax"
-          top="20%"
-          left="60%"
-          duration={21}
-          delay={6}
-          path={{ x: ["0%", "-25%", "30%"], y: ["0%", "35%", "-20%"] }}
-        />
-        <GradientBlob
-          color="rgba(77, 126, 100, 0.9)"
-          size="65vmax"
-          top="20%"
-          left="20%"
-          duration={27}
-          delay={1}
-          path={{ x: ["0%", "15%", "-20%"], y: ["0%", "-15%", "20%"] }}
-        />
-        <GradientBlob
-          color="rgba(245, 230, 211, 0.5)"
-          size="35vmax"
-          top="60%"
-          left="50%"
-          duration={15}
-          delay={8}
-          path={{ x: ["0%", "-30%", "10%"], y: ["0%", "-25%", "5%"] }}
-        />
-      </motion.div>
+      )}
+
+      {/* Subtle grid pattern */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.025]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }}
+      />
 
       {/* Top fade for nav readability */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-gradient-to-b from-[#1a3a28]/50 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-32 bg-gradient-to-b from-[#0c1f15]/60 to-transparent" />
 
-      {/* Content with parallax */}
+      {/* Content */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 text-center md:px-12"
+        className="relative z-10 w-full px-6 md:px-12 lg:px-20"
       >
-        {/* Logo blur-in */}
+        {/* Logo */}
+        <ClipReveal delay={0.2} className="mb-10 md:mb-14">
+          <ZahaLogo className="h-8 w-auto text-zaha-beige/70 md:h-10" />
+        </ClipReveal>
+
+        {/* Massive editorial typography */}
+        <div>
+          {/* Line 1: TECH & — filled white */}
+          <ClipReveal delay={0.4}>
+            <p className="hero-display font-black uppercase leading-[0.85] tracking-[-0.04em] text-white">
+              TECH &amp;
+            </p>
+          </ClipReveal>
+
+          {/* Line 2: CRÉATIFS, — filled beige */}
+          <ClipReveal delay={0.55}>
+            <p className="hero-display font-black uppercase leading-[0.85] tracking-[-0.04em] text-zaha-beige">
+              CR&Eacute;ATIFS,
+            </p>
+          </ClipReveal>
+        </div>
+
+        {/* Marquee strip */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="my-3 md:my-5"
         >
-          <ZahaLogo className="mx-auto h-14 w-auto text-zaha-beige drop-shadow-lg md:h-20 lg:h-24" />
+          <Marquee />
         </motion.div>
 
-        {/* Block letters headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-home-hero font-black uppercase tracking-tighter text-white drop-shadow-md"
-        >
-          TECH &amp; CR&Eacute;ATIFS,
-          <br />
-          <span className="text-zaha-beige">AU COLLECTIF.</span>
-        </motion.h1>
+        {/* Line 3: AU COLLECTIF. — outlined / stroke */}
+        <ClipReveal delay={0.7}>
+          <p className="hero-display hero-outline font-black uppercase leading-[0.85] tracking-[-0.04em]">
+            AU COLLECTIF.
+          </p>
+        </ClipReveal>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.6, ease: [0.33, 1, 0.68, 1] }}
-          className="mx-auto mt-8 max-w-[36rem] text-lg font-light leading-relaxed text-white/70 md:text-xl"
-        >
-          Architecture logicielle, d&eacute;veloppement web, UX/UI design &amp; applications
-          Shopify. Un collectif de talents s&eacute;niors, tech et cr&eacute;atifs, pour vos
-          projets les plus ambitieux.
-        </motion.p>
+        {/* Bottom row: subtitle left + CTAs right */}
+        <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 1.5,
+              duration: 0.7,
+              ease: [0.33, 1, 0.68, 1],
+            }}
+            className="max-w-md text-base font-light leading-relaxed text-white/45 md:text-lg"
+          >
+            Un collectif de talents s&eacute;niors — tech et cr&eacute;atifs —
+            pour vos projets les plus ambitieux.
+          </motion.p>
 
-        {/* Dual CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2 }}
-          className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <MagneticButton
-            href="/contact"
-            className="rounded-full bg-zaha-beige px-8 py-4 text-base font-semibold text-zaha-green shadow-lg transition-all hover:bg-white hover:shadow-xl"
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.8, duration: 0.6 }}
+            className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4"
           >
-            Lancer un projet
-          </MagneticButton>
-          <MagneticButton
-            href="/rejoindre"
-            className="rounded-full border-2 border-white/25 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/50 hover:bg-white/10"
-          >
-            Rejoindre le collectif
-          </MagneticButton>
-        </motion.div>
+            <MagneticButton
+              href="/contact"
+              className="rounded-full bg-zaha-beige px-8 py-4 text-base font-semibold text-[#0c1f15] transition-all hover:shadow-[0_0_40px_rgba(245,230,211,0.25)]"
+            >
+              Lancer un projet
+            </MagneticButton>
+            <MagneticButton
+              href="/rejoindre"
+              className="rounded-full border border-white/15 px-8 py-4 text-base font-semibold text-white/60 transition-all hover:border-white/30 hover:text-white"
+            >
+              Rejoindre le collectif
+            </MagneticButton>
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.8, duration: 0.8 }}
+        transition={{ delay: 2.5, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
       >
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/25 pt-2"
+          className="flex h-10 w-6 items-start justify-center rounded-full border border-white/15 pt-2"
         >
-          <motion.div className="h-1.5 w-1.5 rounded-full bg-white/50" />
+          <motion.div className="h-1.5 w-1.5 rounded-full bg-white/35" />
         </motion.div>
       </motion.div>
     </section>

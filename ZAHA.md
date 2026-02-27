@@ -125,7 +125,8 @@ Et pour nos clients, travailler avec Zaha, c'est avoir accès à des freelances 
 
 ## Clients référents
 
-- EDF Agregio Solutions
+- EDF Store & Forecast
+- Agregio Solutions
 - Reflet Communication
 - Barooders
 - Livemeup

@@ -3,11 +3,27 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --zaha-green: #2D5A3D;
+  --zaha-green-light: #4A7C5C;
+  --zaha-orange: #E87A3A;
+  --zaha-orange-light: #F09A5E;
+  --zaha-beige: #F5E6D3;
+  --zaha-beige-dark: #D4C4B0;
+  --zaha-black: #0A0A0A;
+  --zaha-white: #FAFAF8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-zaha-green: var(--zaha-green);
+  --color-zaha-green-light: var(--zaha-green-light);
+  --color-zaha-orange: var(--zaha-orange);
+  --color-zaha-orange-light: var(--zaha-orange-light);
+  --color-zaha-beige: var(--zaha-beige);
+  --color-zaha-beige-dark: var(--zaha-beige-dark);
+  --color-zaha-black: var(--zaha-black);
+  --color-zaha-white: var(--zaha-white);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -22,5 +38,66 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Smooth scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Responsive clamp utilities */
+.text-hero {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.05;
+}
+
+.text-section-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15;
+}
+
+/* Luxe landing typography */
+.text-luxe-hero {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  line-height: 1.1;
+}
+
+.text-luxe-section {
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.15;
+}
+
+/* Home hero block typography */
+.text-home-hero {
+  font-size: clamp(3rem, 12vw, 9rem);
+  line-height: 0.95;
+}
+
+/* Noise/grain overlay */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 
 interface AnimatedCounterProps {
@@ -20,7 +20,7 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [hasStarted, setHasStarted] = useState(false);
+  const hasStarted = useRef(false);
 
   const spring = useSpring(0, {
     duration: duration * 1000,
@@ -30,11 +30,11 @@ export function AnimatedCounter({
   const display = useTransform(spring, (v) => Math.round(v));
 
   useEffect(() => {
-    if (isInView && !hasStarted) {
-      setHasStarted(true);
+    if (isInView && !hasStarted.current) {
+      hasStarted.current = true;
       spring.set(target);
     }
-  }, [isInView, hasStarted, spring, target]);
+  }, [isInView, spring, target]);
 
   return (
     <span ref={ref} className={className}>

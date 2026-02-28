@@ -13,11 +13,11 @@ export function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [displayValue, setDisplayValue] = useState("0%");
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const hasAnimated = useRef(false);
 
   const scramble = useCallback(() => {
-    if (hasAnimated) return;
-    setHasAnimated(true);
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
 
     const startTime = Date.now();
     const interval = setInterval(() => {
@@ -51,13 +51,13 @@ export function HeroSection() {
     }, FRAME_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [hasAnimated]);
+  }, []);
 
   useEffect(() => {
-    if (isInView && !hasAnimated) {
+    if (isInView && !hasAnimated.current) {
       scramble();
     }
-  }, [isInView, hasAnimated, scramble]);
+  }, [isInView, scramble]);
 
   return (
     <SectionWrapper

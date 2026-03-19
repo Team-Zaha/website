@@ -188,27 +188,6 @@ export function HeroHome() {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 w-full px-6 md:px-12 lg:px-20"
       >
-        {/* Mobile cards — top 2 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.7 }}
-          className="mb-6 flex gap-3 lg:hidden"
-        >
-          {freelances.slice(0, 2).map((f) => (
-            <motion.div
-              key={f.name}
-              drag
-              dragMomentum={false}
-              dragElastic={0.15}
-              whileDrag={{ scale: 1.05, zIndex: 50 }}
-              className="cursor-grab active:cursor-grabbing"
-            >
-              <CardContent f={f} />
-            </motion.div>
-          ))}
-        </motion.div>
-
         {/* Massive editorial typography */}
         <div>
           {/* Line 1: TECH & — filled white */}
@@ -232,27 +211,6 @@ export function HeroHome() {
             AU COLLECTIF.
           </p>
         </ClipReveal>
-
-        {/* Mobile cards — bottom 2 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.7 }}
-          className="mt-6 flex gap-3 lg:hidden"
-        >
-          {freelances.slice(2, 4).map((f) => (
-            <motion.div
-              key={f.name}
-              drag
-              dragMomentum={false}
-              dragElastic={0.15}
-              whileDrag={{ scale: 1.05, zIndex: 50 }}
-              className="cursor-grab active:cursor-grabbing"
-            >
-              <CardContent f={f} />
-            </motion.div>
-          ))}
-        </motion.div>
 
         {/* Bottom row: subtitle left + CTAs right */}
         <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">

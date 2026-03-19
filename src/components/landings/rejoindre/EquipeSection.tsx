@@ -42,11 +42,17 @@ const teamMembers: TeamMember[] = [
     detail: "Sciences comportementales",
     initials: "MB",
   },
+  // {
+  //   name: "Toon van Ramshorst",
+  //   role: "Svelte Developer",
+  //   detail: "10 ans d'expérience",
+  //   initials: "TR",
+  // },
   {
-    name: "Toon van Ramshorst",
-    role: "Svelte Developer",
-    detail: "10 ans d'expérience",
-    initials: "TR",
+    name: "Paula Sanchi Sancho",
+    role: "Traductrice",
+    detail: "Espagnol, Anglais, Français",
+    initials: "PS",
   },
 ];
 

@@ -53,20 +53,19 @@ function Marquee() {
   ];
 
   return (
-    <div className="relative overflow-hidden border-y border-white/10 py-3 md:py-4">
+    <div className="relative overflow-hidden border-y border-white/10 py-3 md:py-4" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)" }}>
       <div className="marquee-track flex whitespace-nowrap">
         {[0, 1].map((i) => (
           <div
             key={i}
-            className="flex shrink-0 items-center gap-6 pr-6 md:gap-10 md:pr-10"
+            className="flex shrink-0 items-center gap-12 pr-12 md:gap-16 md:pr-16"
           >
             {services.map((s) => (
               <span
                 key={`${i}-${s}`}
-                className="flex items-center gap-6 text-sm font-medium uppercase tracking-[0.2em] text-zaha-orange/50 md:gap-10 md:text-base"
+                className="text-sm font-medium uppercase tracking-[0.2em] text-zaha-orange/50 md:text-base"
               >
                 {s}
-                <span className="text-zaha-beige/20">&#x25C6;</span>
               </span>
             ))}
           </div>
@@ -167,7 +166,7 @@ export function HeroHome() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.8 }}
-          className="my-3 md:my-5"
+          className="my-3 -mx-6 md:my-5 md:-mx-12 lg:-mx-20"
         >
           <Marquee />
         </motion.div>

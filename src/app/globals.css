@@ -41,19 +41,6 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Smooth scroll */
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
 /* Responsive clamp utilities */
 .text-hero {
   font-size: clamp(2.5rem, 8vw, 5rem);
@@ -88,13 +75,14 @@ html.lenis, html.lenis body {
 }
 
 .hero-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+  color: #0c1f15;
+  -webkit-text-stroke: 3px rgba(255, 255, 255, 0.25);
+  paint-order: stroke fill;
 }
 
 @media (min-width: 768px) {
   .hero-outline {
-    -webkit-text-stroke: 3px rgba(255, 255, 255, 0.25);
+    -webkit-text-stroke: 6px rgba(255, 255, 255, 0.25);
   }
 }
 

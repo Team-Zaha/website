@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useLenis } from "@/hooks/useLenis";
+import { useScrollPerfMonitor } from "@/hooks/useScrollPerfMonitor";
 import Link from "next/link";
 
 interface LandingLayoutProps {
@@ -17,7 +17,7 @@ export function LandingLayout({
   grain = true,
   navLinks,
 }: LandingLayoutProps) {
-  useLenis();
+  useScrollPerfMonitor();
 
   return (
     <div

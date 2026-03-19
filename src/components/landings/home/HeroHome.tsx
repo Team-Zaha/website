@@ -1,14 +1,7 @@
 "use client";
 
-import { useRef, useCallback } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useSpring,
-  useMotionTemplate,
-} from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/shared/MagneticButton";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
@@ -39,38 +32,113 @@ function ClipReveal({
   );
 }
 
-/* ─── Infinite horizontal marquee ─── */
-function Marquee() {
-  const services = [
-    "Architecture logicielle",
-    "Développement web",
-    "UX/UI Design",
-    "Applications Shopify",
-    "React & Next.js",
-    "Design System",
-    "E-commerce",
-    "Performance",
-  ];
+/* ─── Floating cards ─── */
+const freelances = [
+  {
+    name: "Yann",
+    talent: "Architecte Fullstack",
+    tags: ["E-commerce", "Performance"],
+    style: { top: "8%", right: "34%" },
+    rotate: -6,
+    floatDuration: 5.2,
+    floatDelay: 0,
+    floatY: 12,
+  },
+  {
+    name: "Paula",
+    talent: "Traductrice",
+    tags: ["Espagnol", "Anglais", "Français"],
+    style: { top: "14%", right: "6%" },
+    rotate: 4,
+    floatDuration: 7,
+    floatDelay: 1.8,
+    floatY: 14,
+  },
+  {
+    name: "Thibaud",
+    talent: "Développeur Senior",
+    tags: ["Développement web", "Architecture logicielle"],
+    style: { top: "30%", right: "22%" },
+    rotate: -3,
+    floatDuration: 6.4,
+    floatDelay: 1.2,
+    floatY: 16,
+  },
+  {
+    name: "Maxime",
+    talent: "UX & UI Designer",
+    tags: ["UX/UI Design", "Design System"],
+    style: { top: "42%", right: "4%" },
+    rotate: 5,
+    floatDuration: 5.8,
+    floatDelay: 0.6,
+    floatY: 10,
+  },
+];
 
+function FloatingCard({ f, index }: { f: (typeof freelances)[number]; index: number }) {
   return (
-    <div className="relative overflow-hidden border-y border-white/10 py-3 md:py-4" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)" }}>
-      <div className="marquee-track flex whitespace-nowrap">
-        {[0, 1].map((i) => (
-          <div
-            key={i}
-            className="flex shrink-0 items-center gap-12 pr-12 md:gap-16 md:pr-16"
+    <motion.div
+      className="pointer-events-auto absolute cursor-grab active:cursor-grabbing"
+      style={f.style}
+      initial={{ opacity: 0, y: 30, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        delay: 1.2 + index * 0.2,
+        duration: 0.7,
+        ease: [0.33, 1, 0.68, 1],
+      }}
+      drag
+      dragMomentum={false}
+      dragElastic={0.15}
+      whileDrag={{ scale: 1.05, zIndex: 50 }}
+    >
+      <motion.div
+        animate={{ y: [-f.floatY / 2, f.floatY / 2, -f.floatY / 2] }}
+        transition={{
+          duration: f.floatDuration,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: f.floatDelay,
+        }}
+      >
+        <CardContent f={f} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function CardContent({ f }: { f: (typeof freelances)[number] }) {
+  return (
+    <div
+      className="relative overflow-hidden rounded-xl bg-zaha-beige px-2.5 py-2 shadow-[0_0_30px_rgba(245,230,211,0.25),0_0_60px_rgba(232,122,58,0.1)] lg:rounded-2xl lg:px-5 lg:py-4"
+      style={{ transform: `rotate(${f.rotate}deg)` }}
+    >
+      {/* Top accent line */}
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-zaha-orange/20 via-zaha-orange to-zaha-orange/20 lg:h-[3px]" />
+
+      <p className="relative text-[10px] font-medium tracking-wide text-[#0c1f15] lg:text-sm">{f.name}</p>
+      <p className="relative mt-0.5 text-[8px] font-light uppercase tracking-[0.15em] text-zaha-orange lg:mt-1 lg:text-[11px]">{f.talent}</p>
+      <div className="relative mt-1 flex flex-wrap gap-0.5 lg:mt-2.5 lg:gap-1.5">
+        {f.tags.map((tag) => (
+          <span
+            key={tag}
+            className="rounded-full border border-[#0c1f15]/15 px-1.5 py-px text-[7px] font-normal tracking-wider text-[#0c1f15]/60 lg:px-2.5 lg:py-0.5 lg:text-[10px]"
           >
-            {services.map((s) => (
-              <span
-                key={`${i}-${s}`}
-                className="text-sm font-medium uppercase tracking-[0.2em] text-zaha-orange/50 md:text-base"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
+            {tag}
+          </span>
         ))}
       </div>
+    </div>
+  );
+}
+
+function FloatingCards() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-20 mx-auto hidden max-w-[1400px] lg:block">
+      {freelances.map((f, i) => (
+        <FloatingCard key={f.name} f={f} index={i} />
+      ))}
     </div>
   );
 }
@@ -93,39 +161,12 @@ export function HeroHome() {
   );
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  /* Mouse spotlight */
-  const mx = useMotionValue(0.5);
-  const my = useMotionValue(0.5);
-  const smx = useSpring(mx, { stiffness: 40, damping: 25 });
-  const smy = useSpring(my, { stiffness: 40, damping: 25 });
-  const spotX = useTransform(smx, (v) => v * 100);
-  const spotY = useTransform(smy, (v) => v * 100);
-  const spotlightBg = useMotionTemplate`radial-gradient(900px circle at ${spotX}% ${spotY}%, rgba(232,122,58,0.07) 0%, transparent 70%)`;
-
-  const handleMouse = useCallback(
-    (e: React.MouseEvent) => {
-      const r = containerRef.current?.getBoundingClientRect();
-      if (!r) return;
-      mx.set((e.clientX - r.left) / r.width);
-      my.set((e.clientY - r.top) / r.height);
-    },
-    [mx, my]
-  );
 
   return (
     <section
       ref={containerRef}
-      onMouseMove={handleMouse}
       className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-[#0c1f15]"
     >
-      {/* Mouse spotlight overlay */}
-      {!isMobile && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-0"
-          style={{ background: spotlightBg }}
-        />
-      )}
-
       {/* Subtle grid pattern */}
       <div
         className="pointer-events-none absolute inset-0 z-0 opacity-[0.025]"
@@ -139,11 +180,35 @@ export function HeroHome() {
       {/* Top fade for nav readability */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-32 bg-gradient-to-b from-[#0c1f15]/60 to-transparent" />
 
+      {/* Floating cards — right side */}
+      <FloatingCards />
+
       {/* Content */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 w-full px-6 md:px-12 lg:px-20"
       >
+        {/* Mobile cards — top 2 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.7 }}
+          className="mb-6 flex gap-3 lg:hidden"
+        >
+          {freelances.slice(0, 2).map((f) => (
+            <motion.div
+              key={f.name}
+              drag
+              dragMomentum={false}
+              dragElastic={0.15}
+              whileDrag={{ scale: 1.05, zIndex: 50 }}
+              className="cursor-grab active:cursor-grabbing"
+            >
+              <CardContent f={f} />
+            </motion.div>
+          ))}
+        </motion.div>
+
         {/* Massive editorial typography */}
         <div>
           {/* Line 1: TECH & — filled white */}
@@ -161,22 +226,33 @@ export function HeroHome() {
           </ClipReveal>
         </div>
 
-        {/* Marquee strip */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-          className="my-3 -mx-6 md:my-5 md:-mx-12 lg:-mx-20"
-        >
-          <Marquee />
-        </motion.div>
-
         {/* Line 3: AU COLLECTIF. — outlined / stroke */}
         <ClipReveal delay={0.5}>
           <p className="hero-display hero-outline font-black uppercase leading-[0.85] tracking-[-0.04em]">
             AU COLLECTIF.
           </p>
         </ClipReveal>
+
+        {/* Mobile cards — bottom 2 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.7 }}
+          className="mt-6 flex gap-3 lg:hidden"
+        >
+          {freelances.slice(2, 4).map((f) => (
+            <motion.div
+              key={f.name}
+              drag
+              dragMomentum={false}
+              dragElastic={0.15}
+              whileDrag={{ scale: 1.05, zIndex: 50 }}
+              className="cursor-grab active:cursor-grabbing"
+            >
+              <CardContent f={f} />
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Bottom row: subtitle left + CTAs right */}
         <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
@@ -205,13 +281,13 @@ export function HeroHome() {
           >
             <MagneticButton
               href="/contact"
-              className="rounded-full bg-zaha-beige px-8 py-4 text-base font-semibold text-[#0c1f15] transition-all hover:shadow-[0_0_40px_rgba(245,230,211,0.25)]"
+              className="flex items-center justify-center rounded-full bg-zaha-beige px-8 py-4 text-center text-base font-semibold text-[#0c1f15] transition-all hover:shadow-[0_0_40px_rgba(245,230,211,0.25)]"
             >
               Lancer un projet
             </MagneticButton>
             <MagneticButton
               href="/rejoindre"
-              className="rounded-full border border-white/15 px-8 py-4 text-base font-semibold text-white/60 transition-all hover:border-white/30 hover:text-white"
+              className="flex items-center justify-center rounded-full border border-white/15 px-8 py-4 text-center text-base font-semibold text-white/60 transition-all hover:border-white/30 hover:text-white"
             >
               Rejoindre le collectif
             </MagneticButton>

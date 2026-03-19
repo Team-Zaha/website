@@ -35,6 +35,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -71,7 +75,7 @@ body {
 
 /* Editorial hero display — massive full-width type */
 .hero-display {
-  font-size: clamp(3.5rem, 14vw, 14rem);
+  font-size: clamp(3rem, 12vw, 14rem);
 }
 
 .hero-outline {

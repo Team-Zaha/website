@@ -49,7 +49,7 @@ const teamMembers: TeamMember[] = [
   //   initials: "TR",
   // },
   {
-    name: "Paula Sanchi Sancho",
+    name: "Paula Sanchis Sancho",
     role: "Traductrice",
     detail: "Espagnol, Anglais, Français",
     initials: "PS",

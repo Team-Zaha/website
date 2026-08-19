@@ -69,17 +69,26 @@ function subdivide(verts: V3[], faces: [number, number, number][]) {
   return out;
 }
 
-/** Orientation : rotation propre autour de l'axe, puis inclinaison de l'axe. */
-function orient([x, y, z]: V3, spin: number): V3 {
+/**
+ * Orientation : rotation propre autour de l'axe, inclinaison de l'axe, puis
+ * roulis dans le plan de l'écran. Les trois angles répondent aux trois axes
+ * du gyroscope sur mobile ; seul le premier bouge au scroll sur desktop.
+ */
+function orient([x, y, z]: V3, spin: number, tilt: number, roll: number): V3 {
   const yaw = 0.38 + spin;
-  const pitch = -0.46;
+  const pitch = -0.46 + tilt;
   const cy = Math.cos(yaw);
   const sy = Math.sin(yaw);
   const cp = Math.cos(pitch);
   const sp = Math.sin(pitch);
+  const cr = Math.cos(roll);
+  const sr = Math.sin(roll);
   const x1 = x * cy + z * sy;
   const z1 = -x * sy + z * cy;
-  return [x1, y * cp - z1 * sp, y * sp + z1 * cp];
+  const y1 = y * cp - z1 * sp;
+  const z2 = y * sp + z1 * cp;
+  // Le roulis tourne l'image autour de l'axe de vue : la profondeur est intacte.
+  return [x1 * cr - y1 * sr, x1 * sr + y1 * cr, z2];
 }
 
 const LIGHT: V3 = unit([-0.45, -0.72, 0.55]);
@@ -91,8 +100,10 @@ const MESH = (() => {
   return { verts, faces };
 })();
 
-/** Un tour de rotation complet du hero, en radians. */
+/** Course complète de chaque axe, en radians. */
 const SPIN = Math.PI * 0.55;
+const TILT = Math.PI * 0.22;
+const ROLL = Math.PI * 0.25;
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -151,8 +162,8 @@ function hullPath(points: [number, number][]) {
  * l'arrière sont conservées mais transparentes : le nombre de nœuds SVG reste
  * constant, on ne fait que réécrire des attributs au scroll.
  */
-function frameAt(spin: number) {
-  const placed = MESH.verts.map((v) => orient(v, spin));
+function frameAt(spin: number, tilt = 0, roll = 0) {
+  const placed = MESH.verts.map((v) => orient(v, spin, tilt, roll));
 
   const faces = MESH.faces.map(([a, b, c]) => {
     const p = [placed[a], placed[b], placed[c]];
@@ -185,8 +196,15 @@ const REST_FRAME = frameAt(0);
 /** Mobile et tablette : la sphère se manipule au doigt ou au gyroscope. */
 const HANDHELD_QUERY = "(max-width: 1023px)";
 
-/** Inclinaison latérale, en degrés, couvrant une rotation complète. */
+/**
+ * Débattement, en degrés, couvrant la course complète de chaque axe :
+ * `gamma` incline à gauche/droite, `beta` bascule d'avant en arrière et
+ * `alpha` pivote l'appareil à plat. La rotation est plus ample sur `alpha`,
+ * dont le geste l'est aussi.
+ */
 const TILT_RANGE = 45;
+const PITCH_RANGE = 45;
+const ROLL_RANGE = 75;
 
 /**
  * iOS n'expose l'orientation qu'après autorisation explicite, demandable
@@ -261,6 +279,16 @@ function GyroToggle({
  */
 const DRAG_SPAN = 0.9;
 
+/** Inertie commune aux trois axes : la rotation continue au lieu de se figer net. */
+const SPRING = {
+  stiffness: 55,
+  damping: 22,
+  mass: 0.7,
+  restDelta: 0.0005,
+} as const;
+
+const clamp = (n: number) => Math.max(-1, Math.min(1, n));
+
 function Sphere({
   progress,
   gyro,
@@ -273,17 +301,15 @@ function Sphere({
   const reduced = useReducedMotion();
   const handheld = useMediaQuery(HANDHELD_QUERY);
 
-  // Source unique de la rotation : le scroll sur desktop, le doigt sur mobile.
+  // Source de la rotation : le scroll sur desktop, le doigt ou le gyroscope sur
+  // mobile. Seul le gyroscope alimente les deux axes secondaires.
   const target = useMotionValue(0);
+  const targetTilt = useMotionValue(0);
+  const targetRoll = useMotionValue(0);
 
-  // Un ressort donne son inertie à la rotation : elle continue brièvement
-  // au lieu de se figer net.
-  const spin = useSpring(target, {
-    stiffness: 55,
-    damping: 22,
-    mass: 0.7,
-    restDelta: 0.0005,
-  });
+  const spin = useSpring(target, SPRING);
+  const tilt = useSpring(targetTilt, SPRING);
+  const roll = useSpring(targetRoll, SPRING);
 
   useEffect(() => {
     if (reduced) return;
@@ -293,12 +319,34 @@ function Sphere({
       return progress.on("change", (v) => target.set(v));
     }
 
-    // Gyroscope autorisé : l'inclinaison latérale pilote la rotation.
+    // Gyroscope autorisé : les trois axes du capteur pilotent la rotation. Les
+    // signes placent la caméra en orbite autour d'une sphère immobile, plutôt
+    // que de faire tourner la sphère avec l'appareil.
     if (gyro) {
+      // La première lecture fixe le neutre : la façon de tenir l'appareil ne
+      // doit pas décaler la sphère d'entrée de jeu.
+      let rest: { alpha: number; beta: number; gamma: number } | null = null;
+
       const onOrient = (event: DeviceOrientationEvent) => {
-        if (event.gamma === null) return;
-        target.set(Math.max(-1, Math.min(1, event.gamma / TILT_RANGE)));
+        const { alpha, beta, gamma } = event;
+        if (beta === null || gamma === null) return;
+
+        if (!rest) {
+          rest = { alpha: alpha ?? 0, beta, gamma };
+          return;
+        }
+
+        target.set(clamp(-(gamma - rest.gamma) / TILT_RANGE));
+        targetTilt.set(clamp((beta - rest.beta) / PITCH_RANGE));
+
+        // `alpha` est un cap circulaire : l'écart est ramené dans [-180, 180]
+        // pour que le passage par 360° ne provoque pas un tour complet.
+        if (alpha !== null) {
+          const drift = ((alpha - rest.alpha + 540) % 360) - 180;
+          targetRoll.set(clamp(drift / ROLL_RANGE));
+        }
       };
+
       window.addEventListener("deviceorientation", onOrient);
       return () => window.removeEventListener("deviceorientation", onOrient);
     }
@@ -338,7 +386,7 @@ function Sphere({
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("touchcancel", onEnd);
     };
-  }, [gyro, handheld, progress, reduced, target]);
+  }, [gyro, handheld, progress, reduced, target, targetTilt, targetRoll]);
 
   useEffect(() => {
     if (reduced) return;
@@ -346,8 +394,12 @@ function Sphere({
     if (!group) return;
     const paths = Array.from(group.children) as SVGPathElement[];
 
-    const draw = (p: number) => {
-      const { faces, silhouette } = frameAt(p * SPIN);
+    const draw = () => {
+      const { faces, silhouette } = frameAt(
+        spin.get() * SPIN,
+        tilt.get() * TILT,
+        roll.get() * ROLL
+      );
       silhouetteRef.current?.setAttribute("d", silhouette);
       for (let i = 0; i < paths.length; i++) {
         paths[i].setAttribute("d", faces[i].d);
@@ -355,9 +407,25 @@ function Sphere({
       }
     };
 
-    draw(spin.get());
-    return spin.on("change", draw);
-  }, [spin, reduced]);
+    // Les trois ressorts avancent ensemble : on ne redessine qu'une fois par
+    // frame, sinon la même géométrie serait recalculée jusqu'à trois fois.
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        draw();
+      });
+    };
+
+    draw();
+    const stop = [spin, tilt, roll].map((value) => value.on("change", schedule));
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      stop.forEach((off) => off());
+    };
+  }, [spin, tilt, roll, reduced]);
 
   return (
     <svg viewBox="-500 -500 1000 1000" className="h-full w-full" aria-hidden>

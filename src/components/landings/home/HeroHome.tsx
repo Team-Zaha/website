@@ -56,7 +56,7 @@ const freelances = [
   },
   {
     name: "Thibaud",
-    talent: "Développeur Senior",
+    talent: "Développeur React Senior",
     tags: ["Développement web", "Architecture logicielle"],
     style: { top: "30%", right: "22%" },
     rotate: -3,

@@ -19,6 +19,18 @@ const teamMembers: TeamMember[] = [
     initials: "YL",
   },
   {
+    name: "Paula Sanchis Sancho",
+    role: "Traductrice",
+    detail: "Espagnol, Anglais, Français",
+    initials: "PS",
+  },
+  {
+    name: "Maxime Barnier",
+    role: "UX & UI Designer",
+    detail: "Sciences comportementales",
+    initials: "MB",
+  },
+  {
     name: "Benoît Barnéoud",
     role: "UX Architect",
     detail: "Digital planner — 20 ans",
@@ -31,16 +43,10 @@ const teamMembers: TeamMember[] = [
     initials: "CB",
   },
   {
-    name: "Thibaud Dutoit",
-    role: "Développeur senior",
-    detail: "Lyon",
+    name: "Thibaud Duthoit",
+    role: "Développeur React Senior",
+    detail: "Paris",
     initials: "TD",
-  },
-  {
-    name: "Maxime Barnier",
-    role: "UX & UI Designer",
-    detail: "Sciences comportementales",
-    initials: "MB",
   },
   // {
   //   name: "Toon van Ramshorst",
@@ -48,12 +54,6 @@ const teamMembers: TeamMember[] = [
   //   detail: "10 ans d'expérience",
   //   initials: "TR",
   // },
-  {
-    name: "Paula Sanchis Sancho",
-    role: "Traductrice",
-    detail: "Espagnol, Anglais, Français",
-    initials: "PS",
-  },
 ];
 
 function MemberCard({

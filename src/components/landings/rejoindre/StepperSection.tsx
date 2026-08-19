@@ -41,21 +41,21 @@ function StepCard({ step, index }: { step: Step; index: number }) {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div ref={ref} className="relative">
-      <RevealOnScroll direction="up" delay={index * 0.15} distance={40}>
-        <div className="relative">
+    <div ref={ref} className="relative h-full">
+      <RevealOnScroll
+        direction="up"
+        delay={index * 0.15}
+        distance={40}
+        className="h-full"
+      >
+        <div className="relative flex h-full flex-col">
           {/* Step card */}
           <motion.div
-            className="relative overflow-hidden rounded-2xl border border-zaha-beige-dark/30 bg-white p-6 md:p-8"
+            className="relative flex flex-1 flex-col rounded-2xl border border-zaha-beige-dark/30 bg-white p-6 md:p-8"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            {/* Large background number */}
-            <span className="pointer-events-none absolute -right-2 -top-4 text-[6rem] font-black leading-none text-zaha-beige/40 md:text-[8rem]">
-              {step.number}
-            </span>
-
-            {/* Step number badge */}
+            {/* Step number badge (mobile only : le stepper desktop porte deja le numero) */}
             <motion.div
               initial={{ scale: 0 }}
               animate={isInView ? { scale: 1 } : { scale: 0 }}
@@ -64,16 +64,16 @@ function StepCard({ step, index }: { step: Step; index: number }) {
                 type: "spring",
                 stiffness: 200,
               }}
-              className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-zaha-green text-sm font-bold text-white"
+              className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zaha-green text-sm font-bold text-white md:hidden"
             >
               {step.number}
             </motion.div>
 
             {/* Content */}
-            <h3 className="relative text-lg font-bold text-zaha-black md:text-xl">
+            <h3 className="text-lg font-bold text-zaha-black md:text-xl">
               {step.title}
             </h3>
-            <p className="relative mt-2 text-base leading-relaxed text-zaha-black/60">
+            <p className="mt-2 text-base leading-relaxed text-zaha-black/60">
               {step.description}
             </p>
           </motion.div>
@@ -110,14 +110,14 @@ export function StepperSection() {
       </RevealOnScroll>
 
       {/* Desktop horizontal stepper */}
-      <div className="hidden gap-6 md:grid md:grid-cols-4">
-        {/* Progress bar */}
-        <div className="col-span-4 mb-8 flex items-center px-4">
-          {steps.map((_, index) => (
-            <div key={index} className="flex flex-1 items-center">
+      <div className="hidden md:block">
+        {/* Progress bar : même grille que les cartes pour aligner les puces */}
+        <div className="mb-8 grid grid-cols-4 gap-6">
+          {steps.map((step, index) => (
+            <div key={step.number} className="relative flex items-center">
               <RevealOnScroll delay={index * 0.2}>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zaha-green text-xs font-bold text-white">
-                  {index + 1}
+                  {step.number}
                 </div>
               </RevealOnScroll>
               {index < steps.length - 1 && (
@@ -126,16 +126,18 @@ export function StepperSection() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 + 0.3, duration: 0.5 }}
-                  className="mx-2 h-px flex-1 origin-left bg-zaha-green/30"
+                  className="absolute -right-8 left-10 h-px origin-left bg-zaha-green/30"
                 />
               )}
             </div>
           ))}
         </div>
 
-        {steps.map((step, index) => (
-          <StepCard key={step.number} step={step} index={index} />
-        ))}
+        <div className="grid grid-cols-4 items-stretch gap-6">
+          {steps.map((step, index) => (
+            <StepCard key={step.number} step={step} index={index} />
+          ))}
+        </div>
       </div>
 
       {/* Mobile vertical stepper */}

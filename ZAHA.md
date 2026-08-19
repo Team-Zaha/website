@@ -81,7 +81,7 @@ Et pour nos clients, travailler avec Zaha, c'est avoir accès à des freelances 
 | Benoît Barnéoud | Digital planner / UX architect / Éco-concepteur de services numériques | UX architect et digital planner, avec 20 ans d'expérience en comm' digitale. Accompagnement dans la mise en place de stratégie digitale avec une approche globale, créative et pragmatique. |
 | César Bonte | Développeur React | Développeur indépendant depuis 3 ans, coach OpenClassroom, spécialisé en React. |
 | Yann Lombard | Fondateur, architecte logiciel fullstack JavaScript | 18+ ans d'expérience. Lead developer et architecte technique pour Longines, Espace Aubade, EDF Store & Forecast. Expertise en React, Node.js, Next.js, PWA, performance et scalabilité. |
-| Thibaud Dutoit | Développeur senior | Membre de l'équipe technique principale, basé à Lyon. |
+| Thibaud Duthoit | Développeur React Senior | Membre de l'équipe technique principale, basé à Paris. |
 | Maxime Barnier | UX & UI Designer | Optimisation et conception d'interfaces numériques. Augmentation des performances de projets digitaux grâce aux sciences comportementales. |
 | Toon van Ramshorst | Svelte developer | 10 ans d'expérience en développement web et product design. A travaillé dans divers rôles en startups et entreprises. |
 

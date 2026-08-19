@@ -202,7 +202,7 @@ export function useScrollPerfMonitor() {
           console.log(
             "  →",
             el.tagName,
-            el.className.slice(0, 80),
+            (el.getAttribute("class") ?? "").slice(0, 80),
             `| backdrop-filter: ${style.backdropFilter}`
           );
         });
@@ -224,7 +224,7 @@ export function useScrollPerfMonitor() {
         console.log(
           "  →",
           el.tagName,
-          el.className.slice(0, 80),
+          (el.getAttribute("class") ?? "").slice(0, 80),
           `| position: ${style.position}`
         );
       });
@@ -245,7 +245,7 @@ export function useScrollPerfMonitor() {
           console.log(
             "  →",
             el.tagName,
-            el.className.slice(0, 80),
+            (el.getAttribute("class") ?? "").slice(0, 80),
             `| will-change: ${getComputedStyle(el).willChange}`
           );
         });
@@ -312,7 +312,7 @@ export function useScrollPerfMonitor() {
         console.log(
           `${prefix}→`,
           el.tagName,
-          el.className.slice(0, 60),
+          (el.getAttribute("class") ?? "").slice(0, 60),
           `| ${name} (${duration})${infinite ? " INFINITE" : ""}`
         );
       });

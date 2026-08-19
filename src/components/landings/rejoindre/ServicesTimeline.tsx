@@ -68,31 +68,28 @@ function TimelineItem({
 
   return (
     <div ref={ref} className="relative flex gap-6 pb-12 md:gap-10 md:pb-16">
-      {/* Timeline line and dot */}
-      <div className="relative flex flex-col items-center">
-        {/* Dot */}
-        <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-zaha-green text-xl shadow-lg md:h-14 md:w-14"
-        >
-          <span role="img" aria-label={service.title}>
-            {service.icon}
-          </span>
-        </motion.div>
+      {/* Connecting line: spans from below the dot to the next item, whatever the text height */}
+      {!isLast && (
+        <div className="absolute top-14 bottom-2 left-6 w-px -translate-x-1/2 bg-zaha-beige-dark/40 md:top-[4rem] md:left-7">
+          <motion.div
+            style={{ height: lineHeight }}
+            className="absolute top-0 left-0 w-full bg-zaha-green"
+          />
+        </div>
+      )}
 
-        {/* Connecting line */}
-        {!isLast && (
-          <div className="relative mt-2 w-px flex-1 bg-zaha-beige-dark/40">
-            <motion.div
-              style={{ height: lineHeight }}
-              className="absolute top-0 left-0 w-full bg-zaha-green"
-            />
-          </div>
-        )}
-      </div>
+      {/* Dot */}
+      <motion.div
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        className="z-10 flex h-12 w-12 shrink-0 items-center justify-center self-start rounded-full bg-zaha-green text-xl shadow-lg md:h-14 md:w-14"
+      >
+        <span role="img" aria-label={service.title}>
+          {service.icon}
+        </span>
+      </motion.div>
 
       {/* Content */}
       <RevealOnScroll direction="left" delay={index * 0.05} distance={40}>

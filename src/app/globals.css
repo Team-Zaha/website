@@ -111,6 +111,68 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
+/* Hero Rejoindre — le globe s'efface la ou le titre se pose */
+.hero-dissolve {
+  -webkit-mask-image: radial-gradient(ellipse 62% 26% at 50% 50%, transparent 20%, #000 100%);
+  mask-image: radial-gradient(ellipse 62% 26% at 50% 50%, transparent 20%, #000 100%);
+}
+
+.hero-clearing {
+  background: radial-gradient(
+    ellipse 66% 24% at 50% 50%,
+    rgba(251, 250, 247, 0.85) 0%,
+    rgba(251, 250, 247, 0.4) 55%,
+    transparent 80%
+  );
+}
+
+@media (min-width: 768px) {
+  .hero-dissolve {
+    -webkit-mask-image: radial-gradient(ellipse 40% 34% at 50% 52%, transparent 22%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 34% at 50% 52%, transparent 22%, #000 100%);
+  }
+
+  .hero-clearing {
+    background: radial-gradient(
+      ellipse 34% 27% at 50% 53%,
+      rgba(251, 250, 247, 0.82) 0%,
+      rgba(251, 250, 247, 0.35) 55%,
+      transparent 78%
+    );
+  }
+}
+
+/* Hero Rejoindre — frontieres pointillees en derive
+   stroke-dashoffset n'est pas compositable : sans couche dediee, chaque frame
+   de la derive repeint tout le hero, fond, sphere et texte compris. */
+.border-layer {
+  will-change: transform;
+}
+
+/* Hors ecran, plus rien ne tourne. */
+.hero-idle .border-drift,
+.hero-idle .border-drift-reverse {
+  animation-play-state: paused;
+}
+
+.hero-idle .border-layer {
+  will-change: auto;
+}
+
+
+@keyframes border-drift {
+  to { stroke-dashoffset: -320; }
+}
+
+.border-drift {
+  animation: border-drift 30s linear infinite;
+}
+
+/* Le tracé qui passe derrière la sphère dérive en sens inverse */
+.border-drift-reverse {
+  animation: border-drift 30s linear infinite reverse;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

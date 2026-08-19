@@ -4,7 +4,13 @@ import { useEffect, useRef } from "react";
 
 /**
  * Hook de monitoring des performances au scroll.
- * Active uniquement en dev. Ouvrir la console pour voir les logs.
+ *
+ * Désactivé par défaut : il maintient un requestAnimationFrame permanent, ce
+ * qui empêche le navigateur de passer en veille et fait chauffer la machine
+ * pendant le développement. Pour l'activer le temps d'une mesure, poser
+ * `NEXT_PUBLIC_PERF_MONITOR=1` dans .env.local puis relancer le serveur.
+ *
+ * Ouvrir la console pour voir les logs.
  *
  * Mesure :
  * - FPS moyen et drops en dessous de 30fps
@@ -18,6 +24,7 @@ export function useScrollPerfMonitor() {
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "development") return;
+    if (process.env.NEXT_PUBLIC_PERF_MONITOR !== "1") return;
     if (isActive.current) return;
     isActive.current = true;
 

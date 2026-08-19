@@ -69,26 +69,54 @@ function subdivide(verts: V3[], faces: [number, number, number][]) {
   return out;
 }
 
+/* ─── Quaternions : l'orientation du device, sans blocage de cardan ─── */
+
+/** (x, y, z, w). */
+type Quat = [number, number, number, number];
+
+const QUAT_ID: Quat = [0, 0, 0, 1];
+
+function qMul(a: Quat, b: Quat): Quat {
+  const [ax, ay, az, aw] = a;
+  const [bx, by, bz, bw] = b;
+  return [
+    aw * bx + ax * bw + ay * bz - az * by,
+    aw * by - ax * bz + ay * bw + az * bx,
+    aw * bz + ax * by - ay * bx + az * bw,
+    aw * bw - ax * bx - ay * by - az * bz,
+  ];
+}
+
+const qConj = ([x, y, z, w]: Quat): Quat => [-x, -y, -z, w];
+
+/** Rotation d'un vecteur : v + 2w(q×v) + 2q×(q×v). */
+function qApply([x, y, z, w]: Quat, [vx, vy, vz]: V3): V3 {
+  const tx = 2 * (y * vz - z * vy);
+  const ty = 2 * (z * vx - x * vz);
+  const tz = 2 * (x * vy - y * vx);
+  return [
+    vx + w * tx + y * tz - z * ty,
+    vy + w * ty + z * tx - x * tz,
+    vz + w * tz + x * ty - y * tx,
+  ];
+}
+
 /**
  * Orientation : rotation propre autour de l'axe, inclinaison de l'axe, puis
- * roulis dans le plan de l'écran. Les trois angles répondent aux trois axes
- * du gyroscope sur mobile ; seul le premier bouge au scroll sur desktop.
+ * la pose du device. Les deux premières donnent la silhouette de repos, la
+ * troisième est le tour que la caméra a fait autour de la sphère.
  */
-function orient([x, y, z]: V3, spin: number, tilt: number, roll: number): V3 {
+function orient([x, y, z]: V3, spin: number, view: Quat | null): V3 {
   const yaw = 0.38 + spin;
-  const pitch = -0.46 + tilt;
+  const pitch = -0.46;
   const cy = Math.cos(yaw);
   const sy = Math.sin(yaw);
   const cp = Math.cos(pitch);
   const sp = Math.sin(pitch);
-  const cr = Math.cos(roll);
-  const sr = Math.sin(roll);
   const x1 = x * cy + z * sy;
   const z1 = -x * sy + z * cy;
-  const y1 = y * cp - z1 * sp;
-  const z2 = y * sp + z1 * cp;
-  // Le roulis tourne l'image autour de l'axe de vue : la profondeur est intacte.
-  return [x1 * cr - y1 * sr, x1 * sr + y1 * cr, z2];
+  const posed: V3 = [x1, y * cp - z1 * sp, y * sp + z1 * cp];
+  return view ? qApply(view, posed) : posed;
 }
 
 const LIGHT: V3 = unit([-0.45, -0.72, 0.55]);
@@ -100,10 +128,8 @@ const MESH = (() => {
   return { verts, faces };
 })();
 
-/** Course complète de chaque axe, en radians. */
+/** Un tour de rotation complet du hero, en radians. */
 const SPIN = Math.PI * 0.55;
-const TILT = Math.PI * 0.22;
-const ROLL = Math.PI * 0.25;
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -162,8 +188,8 @@ function hullPath(points: [number, number][]) {
  * l'arrière sont conservées mais transparentes : le nombre de nœuds SVG reste
  * constant, on ne fait que réécrire des attributs au scroll.
  */
-function frameAt(spin: number, tilt = 0, roll = 0) {
-  const placed = MESH.verts.map((v) => orient(v, spin, tilt, roll));
+function frameAt(spin: number, view: Quat | null = null) {
+  const placed = MESH.verts.map((v) => orient(v, spin, view));
 
   const faces = MESH.faces.map(([a, b, c]) => {
     const p = [placed[a], placed[b], placed[c]];
@@ -196,15 +222,48 @@ const REST_FRAME = frameAt(0);
 /** Mobile et tablette : la sphère se manipule au doigt ou au gyroscope. */
 const HANDHELD_QUERY = "(max-width: 1023px)";
 
+const DEG = Math.PI / 180;
+
+/** Redresse la caméra : elle regarde par le dos de l'appareil, pas par le haut. */
+const Q_SCREEN: Quat = [-Math.SQRT1_2, 0, 0, Math.SQRT1_2];
+
 /**
- * Débattement, en degrés, couvrant la course complète de chaque axe :
- * `gamma` incline à gauche/droite, `beta` bascule d'avant en arrière et
- * `alpha` pivote l'appareil à plat. La rotation est plus ample sur `alpha`,
- * dont le geste l'est aussi.
+ * Pose absolue de l'appareil, telle que la spécifie le W3C : `alpha`, `beta` et
+ * `gamma` sont des angles de Tait-Bryan intrinsèques Z-X'-Y''. Passer par un
+ * quaternion — la méthode de `DeviceOrientationControls` — évite le blocage de
+ * cardan des axes lus séparément et laisse la pose parcourir la sphère entière.
  */
-const TILT_RANGE = 45;
-const PITCH_RANGE = 45;
-const ROLL_RANGE = 75;
+function deviceQuat(alpha: number, beta: number, gamma: number, screen: number): Quat {
+  // Euler YXZ = (beta, alpha, -gamma), développé en quaternion.
+  const x = beta * DEG;
+  const y = alpha * DEG;
+  const z = -gamma * DEG;
+  const c1 = Math.cos(x / 2);
+  const s1 = Math.sin(x / 2);
+  const c2 = Math.cos(y / 2);
+  const s2 = Math.sin(y / 2);
+  const c3 = Math.cos(z / 2);
+  const s3 = Math.sin(z / 2);
+
+  const q: Quat = [
+    s1 * c2 * c3 + c1 * s2 * s3,
+    c1 * s2 * c3 - s1 * c2 * s3,
+    c1 * c2 * s3 - s1 * s2 * c3,
+    c1 * c2 * c3 + s1 * s2 * s3,
+  ];
+
+  // Puis l'orientation de l'écran : paysage ou portrait retourné.
+  const half = (-screen * DEG) / 2;
+  return qMul(qMul(q, Q_SCREEN), [0, 0, Math.sin(half), Math.cos(half)]);
+}
+
+/** Angle de l'écran, en degrés. `window.orientation` couvre les vieux iOS. */
+function screenAngle() {
+  if (typeof screen !== "undefined" && screen.orientation) {
+    return screen.orientation.angle;
+  }
+  return (window as Window & { orientation?: number }).orientation ?? 0;
+}
 
 /**
  * iOS n'expose l'orientation qu'après autorisation explicite, demandable
@@ -279,7 +338,7 @@ function GyroToggle({
  */
 const DRAG_SPAN = 0.9;
 
-/** Inertie commune aux trois axes : la rotation continue au lieu de se figer net. */
+/** Un ressort donne son inertie au scroll et au glissement du doigt. */
 const SPRING = {
   stiffness: 55,
   damping: 22,
@@ -287,7 +346,25 @@ const SPRING = {
   restDelta: 0.0005,
 } as const;
 
-const clamp = (n: number) => Math.max(-1, Math.min(1, n));
+/**
+ * Lissage du capteur, par frame. Le gyroscope est bruité et échantillonne par
+ * paliers : la pose rendue rattrape la pose mesurée au lieu de la copier.
+ */
+const GYRO_EASE = 0.18;
+
+/** En deçà, la pose lissée est arrivée : inutile de redessiner. */
+const GYRO_REST = 1e-4;
+
+/** Interpolation d'une pose vers une autre, par le plus court des deux chemins. */
+function nlerp(from: Quat, to: Quat, t: number): Quat {
+  const dot =
+    from[0] * to[0] + from[1] * to[1] + from[2] * to[2] + from[3] * to[3];
+  // q et -q décrivent la même pose : le signe évite de partir par le grand tour.
+  const dir = dot < 0 ? -1 : 1;
+  const [x, y, z, w] = from.map((v, i) => v + (to[i] * dir - v) * t) as Quat;
+  const l = Math.hypot(x, y, z, w) || 1;
+  return [x / l, y / l, z / l, w / l];
+}
 
 function Sphere({
   progress,
@@ -301,15 +378,15 @@ function Sphere({
   const reduced = useReducedMotion();
   const handheld = useMediaQuery(HANDHELD_QUERY);
 
-  // Source de la rotation : le scroll sur desktop, le doigt ou le gyroscope sur
-  // mobile. Seul le gyroscope alimente les deux axes secondaires.
+  // Scroll et glissement du doigt : un seul axe, amorti par un ressort.
   const target = useMotionValue(0);
-  const targetTilt = useMotionValue(0);
-  const targetRoll = useMotionValue(0);
-
   const spin = useSpring(target, SPRING);
-  const tilt = useSpring(targetTilt, SPRING);
-  const roll = useSpring(targetRoll, SPRING);
+
+  // Gyroscope : une pose complète, qui ne se réduit pas à un scalaire et vit
+  // donc hors du ressort. `goal` est ce que mesure le capteur, `view` ce qui
+  // est effectivement rendu, à un lissage près.
+  const goal = useRef<Quat | null>(null);
+  const view = useRef<Quat | null>(null);
 
   useEffect(() => {
     if (reduced) return;
@@ -319,36 +396,34 @@ function Sphere({
       return progress.on("change", (v) => target.set(v));
     }
 
-    // Gyroscope autorisé : les trois axes du capteur pilotent la rotation. Les
-    // signes placent la caméra en orbite autour d'une sphère immobile, plutôt
-    // que de faire tourner la sphère avec l'appareil.
+    // Gyroscope autorisé : la pose entière de l'appareil pilote la sphère, donc
+    // les trois axes du capteur, sans plage ni butée. Faire un tour sur soi-même
+    // fait bien le tour de la sphère.
     if (gyro) {
       // La première lecture fixe le neutre : la façon de tenir l'appareil ne
-      // doit pas décaler la sphère d'entrée de jeu.
-      let rest: { alpha: number; beta: number; gamma: number } | null = null;
+      // doit pas décaler la sphère à l'instant où le capteur prend la main.
+      let rest: Quat | null = null;
 
       const onOrient = (event: DeviceOrientationEvent) => {
         const { alpha, beta, gamma } = event;
-        if (beta === null || gamma === null) return;
+        if (alpha === null || beta === null || gamma === null) return;
 
-        if (!rest) {
-          rest = { alpha: alpha ?? 0, beta, gamma };
-          return;
-        }
+        const pose = deviceQuat(alpha, beta, gamma, screenAngle());
+        rest ??= pose;
 
-        target.set(clamp(-(gamma - rest.gamma) / TILT_RANGE));
-        targetTilt.set(clamp((beta - rest.beta) / PITCH_RANGE));
-
-        // `alpha` est un cap circulaire : l'écart est ramené dans [-180, 180]
-        // pour que le passage par 360° ne provoque pas un tour complet.
-        if (alpha !== null) {
-          const drift = ((alpha - rest.alpha + 540) % 360) - 180;
-          targetRoll.set(clamp(drift / ROLL_RANGE));
-        }
+        // L'écart depuis le neutre, puis son inverse : la sphère reste immobile
+        // et c'est la caméra qui l'orbite. L'axe y est retourné au passage, le
+        // capteur le comptant vers le haut et le SVG vers le bas.
+        const [x, y, z, w] = qConj(qMul(qConj(rest), pose));
+        goal.current = [-x, y, -z, w];
       };
 
       window.addEventListener("deviceorientation", onOrient);
-      return () => window.removeEventListener("deviceorientation", onOrient);
+      return () => {
+        window.removeEventListener("deviceorientation", onOrient);
+        goal.current = null;
+        view.current = null;
+      };
     }
 
     // Sinon, le glissement horizontal fait tourner la sphère. Aucun preventDefault :
@@ -386,7 +461,7 @@ function Sphere({
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("touchcancel", onEnd);
     };
-  }, [gyro, handheld, progress, reduced, target, targetTilt, targetRoll]);
+  }, [gyro, handheld, progress, reduced, target]);
 
   useEffect(() => {
     if (reduced) return;
@@ -395,11 +470,7 @@ function Sphere({
     const paths = Array.from(group.children) as SVGPathElement[];
 
     const draw = () => {
-      const { faces, silhouette } = frameAt(
-        spin.get() * SPIN,
-        tilt.get() * TILT,
-        roll.get() * ROLL
-      );
+      const { faces, silhouette } = frameAt(spin.get() * SPIN, view.current);
       silhouetteRef.current?.setAttribute("d", silhouette);
       for (let i = 0; i < paths.length; i++) {
         paths[i].setAttribute("d", faces[i].d);
@@ -407,25 +478,35 @@ function Sphere({
       }
     };
 
-    // Les trois ressorts avancent ensemble : on ne redessine qu'une fois par
-    // frame, sinon la même géométrie serait recalculée jusqu'à trois fois.
-    let frame = 0;
-    const schedule = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        draw();
-      });
-    };
+    // Sans gyroscope, la seule source est le ressort : on suit ses changements.
+    if (!gyro) {
+      draw();
+      return spin.on("change", draw);
+    }
+
+    // Avec le gyroscope, la pose rendue rattrape la pose mesurée frame par
+    // frame. Rien n'est redessiné tant qu'elle ne bouge pas : appareil posé,
+    // la boucle ne coûte qu'une comparaison.
+    let frame = requestAnimationFrame(function step() {
+      frame = requestAnimationFrame(step);
+      if (!goal.current) return;
+
+      const from = view.current ?? QUAT_ID;
+      const next = nlerp(from, goal.current, GYRO_EASE);
+      const moved =
+        Math.abs(next[0] - from[0]) +
+        Math.abs(next[1] - from[1]) +
+        Math.abs(next[2] - from[2]) +
+        Math.abs(next[3] - from[3]);
+
+      if (moved < GYRO_REST) return;
+      view.current = next;
+      draw();
+    });
 
     draw();
-    const stop = [spin, tilt, roll].map((value) => value.on("change", schedule));
-
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      stop.forEach((off) => off());
-    };
-  }, [spin, tilt, roll, reduced]);
+    return () => cancelAnimationFrame(frame);
+  }, [spin, reduced, gyro]);
 
   return (
     <svg viewBox="-500 -500 1000 1000" className="h-full w-full" aria-hidden>

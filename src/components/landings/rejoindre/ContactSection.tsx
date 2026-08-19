@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { RevealOnScroll } from "@/components/shared/RevealOnScroll";
@@ -24,6 +24,19 @@ export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [erreurs, setErreurs] = useState<Record<string, string>>({});
   const [erreurGlobale, setErreurGlobale] = useState<string | null>(null);
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // La carte de confirmation est bien plus courte que le formulaire : sans ce
+  // recadrage, la page raccourcit sous la position de scroll et l'utilisateur
+  // se retrouve devant une zone vide.
+  useEffect(() => {
+    if (submitted) {
+      successRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [submitted]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,22 +110,25 @@ export function ContactSection() {
         </RevealOnScroll>
 
         {submitted ? (
-          <RevealOnScroll>
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              role="status"
-              className="rounded-2xl border border-zaha-green/20 bg-zaha-green/5 p-8 text-center md:p-12"
-            >
-              <div className="mb-4 text-5xl">🎉</div>
-              <h3 className="text-xl font-bold text-zaha-green md:text-2xl">
-                Merci pour ton message !
-              </h3>
-              <p className="mt-3 text-base text-zaha-black/60">
-                On te recontacte très vite pour un premier échange.
-              </p>
-            </motion.div>
-          </RevealOnScroll>
+          /* Pas de RevealOnScroll ici : la carte remplace le formulaire alors
+             que l'utilisateur a déjà scrollé, et le viewport margin la
+             laisserait invisible jusqu'au prochain scroll. */
+          <motion.div
+            ref={successRef}
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
+            role="status"
+            className="rounded-2xl border border-zaha-green/20 bg-zaha-green/5 p-8 text-center md:p-12"
+          >
+            <div className="mb-4 text-5xl">🎉</div>
+            <h3 className="text-xl font-bold text-zaha-green md:text-2xl">
+              Merci pour ton message !
+            </h3>
+            <p className="mt-3 text-base text-zaha-black/60">
+              On te recontacte très vite pour un premier échange.
+            </p>
+          </motion.div>
         ) : (
           <RevealOnScroll direction="up" delay={0.1}>
             <form

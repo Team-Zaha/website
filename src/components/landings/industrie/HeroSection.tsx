@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 
 function SignalBars({ level }: { level: number }) {
@@ -49,7 +49,13 @@ function SignalBars({ level }: { level: number }) {
   );
 }
 
-function TerminalText({ text, onComplete }: { text: string; onComplete?: () => void }) {
+function TerminalText({
+  text,
+  onComplete,
+}: {
+  text: string;
+  onComplete?: () => void;
+}) {
   const [displayedChars, setDisplayedChars] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
 
@@ -71,13 +77,21 @@ function TerminalText({ text, onComplete }: { text: string; onComplete?: () => v
 
   return (
     <span className="font-mono">
-      {text.slice(0, displayedChars)}
-      <span
-        className={`inline-block w-[3px] bg-zaha-green transition-opacity ${
-          showCursor ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        &nbsp;
+      {/*
+        Le texte complet est rendu côté serveur pour les moteurs de recherche,
+        les LLM et les lecteurs d'écran ; l'effet machine à écrire n'est qu'une
+        surcouche visuelle.
+      */}
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {text.slice(0, displayedChars)}
+        <span
+          className={`inline-block w-[3px] bg-zaha-green transition-opacity ${
+            showCursor ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          &nbsp;
+        </span>
       </span>
     </span>
   );
@@ -96,7 +110,7 @@ export function HeroSection() {
     ];
 
     const timeouts = sequence.map(({ level, delay }) =>
-      setTimeout(() => setSignalLevel(level), delay)
+      setTimeout(() => setSignalLevel(level), delay),
     );
 
     const titleTimeout = setTimeout(() => setPhase("title"), 2600);
@@ -138,68 +152,72 @@ export function HeroSection() {
         </motion.div>
 
         {/* Title with terminal effect */}
-        <AnimatePresence>
-          {(phase === "title" || phase === "subtitle") && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="flex flex-col items-center gap-8"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={
+            phase === "title" || phase === "subtitle"
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 20 }
+          }
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center gap-8"
+        >
+          <h1 className="text-hero max-w-5xl font-bold tracking-tight text-white">
+            <TerminalText
+              text="L'innovation offline-first pour l'industrie"
+              onComplete={() => setPhase("subtitle")}
+            />
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={
+              phase === "subtitle"
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 16 }
+            }
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="max-w-2xl text-lg text-white/60 md:text-xl"
+            style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}
+          >
+            Des applications web qui fonctionnent{" "}
+            <span className="text-zaha-green-light font-medium">
+              {"même là où le réseau ne passe pas."}
+            </span>
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={
+              phase === "subtitle"
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 16 }
+            }
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <a
+              href="#solution"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-zaha-green/30 px-6 py-3 text-sm font-medium text-zaha-green-light transition-colors hover:bg-zaha-green/10"
             >
-              <h1 className="text-hero max-w-5xl font-bold tracking-tight text-white">
-                <TerminalText
-                  text="L'innovation offline-first pour l'industrie"
-                  onComplete={() => setPhase("subtitle")}
+              Découvrir
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                className="animate-bounce"
+              >
+                <path
+                  d="M8 3v10m0 0l-4-4m4 4l4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              </h1>
-
-              {phase === "subtitle" && (
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="max-w-2xl text-lg text-white/60 md:text-xl"
-                  style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}
-                >
-                  Des applications web qui fonctionnent{" "}
-                  <span className="text-zaha-green-light font-medium">
-                    {"même là où le réseau ne passe pas."}
-                  </span>
-                </motion.p>
-              )}
-
-              {phase === "subtitle" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                >
-                  <a
-                    href="#solution"
-                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-zaha-green/30 px-6 py-3 text-sm font-medium text-zaha-green-light transition-colors hover:bg-zaha-green/10"
-                  >
-                    Découvrir
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      className="animate-bounce"
-                    >
-                      <path
-                        d="M8 3v10m0 0l-4-4m4 4l4-4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </svg>
+            </a>
+          </motion.div>
+        </motion.div>
       </div>
     </SectionWrapper>
   );

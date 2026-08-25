@@ -76,7 +76,13 @@ const freelances = [
   },
 ];
 
-function FloatingCard({ f, index }: { f: (typeof freelances)[number]; index: number }) {
+function FloatingCard({
+  f,
+  index,
+}: {
+  f: (typeof freelances)[number];
+  index: number;
+}) {
   return (
     <motion.div
       className="pointer-events-auto absolute cursor-grab active:cursor-grabbing"
@@ -117,8 +123,12 @@ function CardContent({ f }: { f: (typeof freelances)[number] }) {
       {/* Top accent line */}
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-zaha-orange/20 via-zaha-orange to-zaha-orange/20 lg:h-[3px]" />
 
-      <p className="relative text-[10px] font-medium tracking-wide text-[#0c1f15] lg:text-sm">{f.name}</p>
-      <p className="relative mt-0.5 text-[8px] font-light uppercase tracking-[0.15em] text-zaha-orange lg:mt-1 lg:text-[11px]">{f.talent}</p>
+      <p className="relative text-[10px] font-medium tracking-wide text-[#0c1f15] lg:text-sm">
+        {f.name}
+      </p>
+      <p className="relative mt-0.5 text-[8px] font-light uppercase tracking-[0.15em] text-zaha-orange lg:mt-1 lg:text-[11px]">
+        {f.talent}
+      </p>
       <div className="relative mt-1 flex flex-wrap gap-0.5 lg:mt-2.5 lg:gap-1.5">
         {f.tags.map((tag) => (
           <span
@@ -157,10 +167,9 @@ export function HeroHome() {
   const contentY = useTransform(
     scrollYProgress,
     [0, 1],
-    isMobile ? [0, 0] : [0, -120]
+    isMobile ? [0, 0] : [0, -120],
   );
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
 
   return (
     <section
@@ -188,29 +197,39 @@ export function HeroHome() {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 w-full px-6 md:px-12 lg:px-20"
       >
-        {/* Massive editorial typography */}
-        <div>
-          {/* Line 1: TECH & — filled white */}
-          <ClipReveal delay={0.2}>
-            <p className="hero-display font-black uppercase leading-[0.85] tracking-[-0.04em] text-white">
-              TECH &amp;
-            </p>
+        {/* Massive editorial typography — H1 de la page */}
+        <h1>
+          <div>
+            {/* Line 1: TECH & — filled white */}
+            <ClipReveal delay={0.2}>
+              <span className="hero-display block font-black uppercase leading-[0.85] tracking-[-0.04em] text-white">
+                TECH &amp;{" "}
+              </span>
+            </ClipReveal>
+
+            {/* Line 2: CRÉATIFS, — filled beige */}
+            <ClipReveal delay={0.35}>
+              <span className="hero-display block font-black uppercase leading-[0.85] tracking-[-0.04em] text-zaha-beige">
+                CR&Eacute;ATIFS,{" "}
+              </span>
+            </ClipReveal>
+          </div>
+
+          {/* Line 3: AU COLLECTIF. — outlined / stroke */}
+          <ClipReveal delay={0.5}>
+            <span className="hero-display hero-outline block font-black uppercase leading-[0.85] tracking-[-0.04em]">
+              AU COLLECTIF.{" "}
+            </span>
           </ClipReveal>
 
-          {/* Line 2: CRÉATIFS, — filled beige */}
-          <ClipReveal delay={0.35}>
-            <p className="hero-display font-black uppercase leading-[0.85] tracking-[-0.04em] text-zaha-beige">
-              CR&Eacute;ATIFS,
-            </p>
-          </ClipReveal>
-        </div>
-
-        {/* Line 3: AU COLLECTIF. — outlined / stroke */}
-        <ClipReveal delay={0.5}>
-          <p className="hero-display hero-outline font-black uppercase leading-[0.85] tracking-[-0.04em]">
-            AU COLLECTIF.
-          </p>
-        </ClipReveal>
+          {/* Complement porteur de sens pour les moteurs et les LLM :
+              le titre visuel seul ne dit pas ce que fait Zaha. */}
+          <span className="sr-only">
+            {" "}
+            — Zaha, collectif d&apos;experts en architecture logicielle et
+            d&eacute;veloppement web React, Next.js et Node.js.
+          </span>
+        </h1>
 
         {/* Bottom row: subtitle left + CTAs right */}
         <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">

@@ -12,7 +12,9 @@ const FRAME_INTERVAL = 50;
 export function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [displayValue, setDisplayValue] = useState("0%");
+  // Valeur finale dès le rendu serveur : le HTML servi doit annoncer 20%,
+  // pas la valeur de départ de l'animation.
+  const [displayValue, setDisplayValue] = useState(`${TARGET}%`);
   const hasAnimated = useRef(false);
 
   const scramble = useCallback(() => {
@@ -40,8 +42,10 @@ export function HeroSection() {
           .split("")
           .map((char) =>
             Math.random() < 0.3
-              ? SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-              : char
+              ? SCRAMBLE_CHARS[
+                  Math.floor(Math.random() * SCRAMBLE_CHARS.length)
+                ]
+              : char,
           )
           .join("");
         setDisplayValue(`${scrambled}%`);
@@ -73,7 +77,10 @@ export function HeroSection() {
         <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-zaha-green/10 blur-[80px]" />
       </div>
 
-      <div ref={ref} className="relative z-10 flex flex-col items-center justify-center text-center">
+      <div
+        ref={ref}
+        className="relative z-10 flex flex-col items-center justify-center text-center"
+      >
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -88,37 +95,36 @@ export function HeroSection() {
         </motion.div>
 
         {/* Big dramatic number with gradient */}
-        <motion.div
+        <motion.h1
+          className="mb-6"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-6"
         >
           <span
             className="block font-mono font-black leading-none"
             style={{
               fontSize: "clamp(6rem, 22vw, 16rem)",
-              background: "linear-gradient(135deg, #4A7C5C 0%, #2D5A3D 40%, #E87A3A 100%)",
+              background:
+                "linear-gradient(135deg, #4A7C5C 0%, #2D5A3D 40%, #E87A3A 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
               filter: "drop-shadow(0 8px 32px rgba(45, 90, 61, 0.4))",
             }}
           >
-            {displayValue}
+            {displayValue}{" "}
           </span>
-        </motion.div>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.8 }}
-          className="mx-auto max-w-2xl text-xl font-light leading-relaxed text-white/80 md:text-2xl lg:text-3xl"
-          style={{ fontSize: "clamp(1.15rem, 2.5vw, 1.875rem)" }}
-        >
-          de crédit d&#39;impôt sur votre projet logiciel innovant
-        </motion.p>
+          <motion.span
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.8 }}
+            className="mx-auto block max-w-2xl text-xl font-light leading-relaxed text-white/80 md:text-2xl lg:text-3xl"
+            style={{ fontSize: "clamp(1.15rem, 2.5vw, 1.875rem)" }}
+          >
+            de crédit d&#39;impôt sur votre projet logiciel innovant
+          </motion.span>
+        </motion.h1>
 
         {/* Supporting text */}
         <motion.p
@@ -127,7 +133,9 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 1.1 }}
           className="mx-auto mt-6 max-w-xl text-base text-white/50 md:text-lg"
         >
-          Recevez 20% du coût de votre projet logiciel innovant en crédit d&#39;impôt grâce au Crédit Impôt Innovation — jusqu&#39;à 60% si votre entreprise est domiciliée en outre-mer.
+          Recevez 20% du coût de votre projet logiciel innovant en crédit
+          d&#39;impôt grâce au Crédit Impôt Innovation — jusqu&#39;à 60% si
+          votre entreprise est domiciliée en outre-mer.
         </motion.p>
 
         {/* Scroll indicator */}

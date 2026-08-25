@@ -50,7 +50,8 @@ function buildLetterPositions(
   return positions;
 }
 
-const LINES = ["De l'idee", "au produit"];
+const LINES = ["De l'idée", "au produit"];
+const TITLE = LINES.join(" ");
 const CHAR_WIDTH_DESKTOP = 48;
 const CHAR_WIDTH_MOBILE = 28;
 const LINE_HEIGHT_DESKTOP = 72;
@@ -138,8 +139,18 @@ export function HeroSection() {
         </div>
       </motion.div>
 
+      {/*
+        Le titre est animé lettre par lettre, chaque caractère étant positionné en
+        absolu : illisible pour un crawler. On sert donc le H1 en texte contigu
+        et l'animation devient purement décorative.
+      */}
+      <h1 className="sr-only">{TITLE}</h1>
+
       {/* Letters that scatter then assemble */}
-      <div className="relative z-20 flex h-full w-full items-center justify-center">
+      <div
+        aria-hidden="true"
+        className="relative z-20 flex h-full w-full items-center justify-center"
+      >
         <div
           className="relative"
           style={{
@@ -229,7 +240,7 @@ export function HeroSection() {
           className="mx-auto max-w-2xl font-light text-white/80"
           style={{ fontSize: "clamp(1rem, 2.5vw, 1.5rem)" }}
         >
-          Une architecture pensee pour scaler des le jour 1.
+          Une architecture pensée pour scaler dès le jour 1.
         </p>
       </motion.div>
 

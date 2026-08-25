@@ -16,7 +16,7 @@ export function LuxeHero() {
   const contentY = useTransform(
     scrollYProgress,
     [0, 1],
-    isMobile ? [0, 0] : [0, -60]
+    isMobile ? [0, 0] : [0, -60],
   );
 
   const glowScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.3]);
@@ -71,48 +71,62 @@ export function LuxeHero() {
         style={{ y: contentY }}
         className="relative z-10 mx-auto max-w-5xl px-6 text-center md:px-12"
       >
-        {/* Title with clip-path reveal */}
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
-            animate={{ clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 1.4, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-luxe-hero font-light tracking-tight text-[#F5E6D3]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-            }}
-          >
-            L&apos;exigence du luxe
-          </motion.h1>
-        </div>
+        {/* Title with clip-path reveal — un seul H1 pour les trois lignes */}
+        <h1>
+          <div className="overflow-hidden">
+            <motion.span
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              transition={{
+                duration: 1.4,
+                delay: 0.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-luxe-hero block font-light tracking-tight text-[#F5E6D3]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+              }}
+            >
+              L&apos;exigence du luxe{" "}
+            </motion.span>
+          </div>
 
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
-            animate={{ clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 1.4, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="text-luxe-hero font-light tracking-tight text-[#F5E6D3]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-            }}
-          >
-            mérite une ingénierie
-          </motion.h1>
-        </div>
+          <div className="overflow-hidden">
+            <motion.span
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              transition={{
+                duration: 1.4,
+                delay: 0.9,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-luxe-hero block font-light tracking-tight text-[#F5E6D3]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+              }}
+            >
+              mérite une ingénierie{" "}
+            </motion.span>
+          </div>
 
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
-            animate={{ clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 1.4, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="text-luxe-hero font-light italic tracking-tight text-[#D4C4B0]"
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-            }}
-          >
-            d&apos;exception
-          </motion.h1>
-        </div>
+          <div className="overflow-hidden">
+            <motion.span
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              transition={{
+                duration: 1.4,
+                delay: 1.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-luxe-hero block font-light italic tracking-tight text-[#D4C4B0]"
+              style={{
+                fontFamily: "Georgia, 'Times New Roman', serif",
+              }}
+            >
+              d&apos;exception
+            </motion.span>
+          </div>
+        </h1>
 
         {/* Thin line */}
         <motion.div

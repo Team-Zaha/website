@@ -707,7 +707,7 @@ export function HeroRejoindre() {
           transition={{ delay: 0.6, duration: 1, ease: [0.33, 1, 0.68, 1] }}
           className="text-hero max-w-4xl font-bold tracking-tight text-zaha-black"
         >
-          Ton talent n&apos;a pas
+          Ton talent n&apos;a pas{" "}
           <br />
           <span className="text-zaha-green">de frontières.</span>
         </motion.h1>

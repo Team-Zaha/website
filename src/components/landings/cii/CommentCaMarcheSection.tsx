@@ -64,9 +64,9 @@ const steps = [
   },
   {
     number: "03",
-    title: "Vous récupérez 20% à 60% en crédit d\u2019impôt",
+    title: "Vous récupérez 20% en crédit d\u2019impôt",
     description:
-      "Le montant des travaux confiés à Zaha ouvre droit à un crédit d\u2019impôt proportionnel à votre localisation.",
+      "Le montant des travaux confiés à Zaha ouvre droit à un crédit d\u2019impôt de 20% en métropole, 35 à 40% en Corse et 60% en outre-mer.",
     icon: (
       <svg
         viewBox="0 0 48 48"

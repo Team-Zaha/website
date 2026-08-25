@@ -20,14 +20,9 @@ export function CIIBanner() {
                 <div className="absolute left-1/2 top-1/2 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.04] md:h-[620px] md:w-[620px]" />
                 <div className="absolute left-1/2 top-1/2 h-[620px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.02] md:h-[840px] md:w-[840px]" />
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-lg font-medium text-white/60">
-                  jusqu&apos;&agrave;
-                </span>
-              </div>
               <div className="tabular-nums" style={{ minWidth: "3.5ch" }}>
                 <AnimatedCounter
-                  target={60}
+                  target={20}
                   suffix="%"
                   className="text-7xl font-bold text-white md:text-8xl lg:text-9xl"
                 />
@@ -45,12 +40,13 @@ export function CIIBanner() {
                 Agr&eacute;ment CII
               </div>
               <h2 className="mb-4 text-2xl font-bold leading-tight text-white md:text-3xl lg:text-4xl">
-                R&eacute;cup&eacute;rez jusqu&apos;&agrave; 60% du co&ucirc;t de votre projet innovant
+                R&eacute;cup&eacute;rez 20% du co&ucirc;t de votre projet innovant
               </h2>
               <p className="mb-8 max-w-xl text-base leading-relaxed text-white/70 md:text-lg">
                 Gr&acirc;ce au Cr&eacute;dit Imp&ocirc;t Innovation, vos projets de
                 d&eacute;veloppement deviennent un investissement fiscal avantageux.
-                Nous vous accompagnons dans la constitution du dossier.
+                Taux port&eacute; &agrave; 35&nbsp;&agrave;&nbsp;40% en Corse et 60% en
+                outre-mer. Nous vous accompagnons dans la constitution du dossier.
               </p>
               <MagneticButton
                 href="/credit-impot-innovation"

@@ -9,14 +9,18 @@ import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 interface Zone {
   label: string;
   rate: number;
+  rateLabel: string;
   color: string;
 }
 
 const zones: Zone[] = [
-  { label: "Metropole", rate: 0.2, color: "var(--zaha-green)" },
-  { label: "Corse", rate: 0.4, color: "var(--zaha-orange)" },
-  { label: "Outre-mer", rate: 0.6, color: "var(--zaha-green-light)" },
+  { label: "Métropole", rate: 0.2, rateLabel: "20%", color: "var(--zaha-green)" },
+  { label: "Corse", rate: 0.4, rateLabel: "35 à 40%", color: "var(--zaha-orange)" },
+  { label: "Outre-mer", rate: 0.6, rateLabel: "60%", color: "var(--zaha-green-light)" },
 ];
+
+// Le CII plafonne l'assiette de dépenses éligibles à 400 000 € par an.
+const ELIGIBLE_CAP = 400000;
 
 export function BonusCIISection() {
   const [amount, setAmount] = useState<number>(50000);
@@ -40,6 +44,8 @@ export function BonusCIISection() {
   const handleCalculate = useCallback(() => {
     setSubmitted(true);
   }, []);
+
+  const eligible = Math.min(amount, ELIGIBLE_CAP);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("fr-FR", {
@@ -65,10 +71,11 @@ export function BonusCIISection() {
             Le bonus CII
           </h2>
           <p className="mb-12 max-w-2xl text-xl font-light leading-relaxed text-white/80">
-            Vous etes une PME ? Recuperez{" "}
-            <span className="font-bold text-zaha-green">20%</span> a{" "}
-            <span className="font-bold text-zaha-orange">60%</span> du cout de
-            votre MVP grace au Credit Impot Innovation.
+            Vous êtes une PME ? Récupérez{" "}
+            <span className="font-bold text-zaha-green">20%</span> du coût de
+            votre MVP grâce au Crédit Impôt Innovation — jusqu&apos;à{" "}
+            <span className="font-bold text-zaha-orange">60%</span> si votre
+            entreprise est domiciliée en outre-mer.
           </p>
         </RevealOnScroll>
 
@@ -135,19 +142,19 @@ export function BonusCIISection() {
                     {zone.label}
                   </span>
                   <span className="mb-2 block text-xs text-white/40">
-                    {Math.round(zone.rate * 100)}% du montant
+                    {zone.rateLabel} du montant
                   </span>
                   <div className="text-2xl font-black text-white md:text-3xl">
                     {submitted ? (
                       <AnimatedCounter
-                        target={Math.round(amount * zone.rate)}
+                        target={Math.round(eligible * zone.rate)}
                         prefix=""
                         suffix=" EUR"
                         duration={1.5}
                       />
                     ) : (
                       <span className="text-white/30">
-                        {formatCurrency(amount * zone.rate)}
+                        {formatCurrency(eligible * zone.rate)}
                       </span>
                     )}
                   </div>
@@ -156,8 +163,9 @@ export function BonusCIISection() {
             </div>
 
             <p className="mt-6 text-center text-xs text-white/30">
-              Estimation indicative. Le montant reel depend de l&apos;eligibilite
-              de votre projet au CII.
+              Estimation indicative, calculée dans la limite de 400 000 € de
+              dépenses éligibles par an. Le montant réel dépend de
+              l&apos;éligibilité de votre projet au CII.
             </p>
           </div>
         </RevealOnScroll>

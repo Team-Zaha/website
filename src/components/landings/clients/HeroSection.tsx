@@ -201,8 +201,8 @@ export function HeroSection() {
           className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-white/70 md:text-xl"
         >
           Des &eacute;quipes sur mesure en React, Next.js et Node.js pour
-          acc&eacute;l&eacute;rer vos projets web et mobile. Jusqu&apos;&agrave;
-          60% d&apos;&eacute;conomie gr&acirc;ce au Cr&eacute;dit Imp&ocirc;t Innovation.
+          acc&eacute;l&eacute;rer vos projets web et mobile. 20% d&apos;&eacute;conomie
+          gr&acirc;ce au Cr&eacute;dit Imp&ocirc;t Innovation.
         </motion.p>
 
         <motion.div

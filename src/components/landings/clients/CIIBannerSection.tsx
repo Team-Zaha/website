@@ -42,18 +42,13 @@ export function CIIBannerSection() {
           {/* Left: big number */}
           <RevealOnScroll direction="left">
             <div className="flex-shrink-0">
-              <div className="flex items-baseline gap-1">
-                <span className="text-lg font-medium text-white/60">
-                  jusqu&apos;a
-                </span>
-              </div>
               <AnimatedCounter
-                target={60}
+                target={20}
                 suffix="%"
                 className="text-7xl font-bold text-white md:text-8xl lg:text-9xl"
               />
               <p className="mt-2 text-lg font-medium text-white/70">
-                d&apos;economie
+                d&apos;&eacute;conomie
               </p>
             </div>
           </RevealOnScroll>
@@ -62,15 +57,16 @@ export function CIIBannerSection() {
           <RevealOnScroll direction="right" delay={0.2}>
             <div>
               <div className="mb-4 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/80">
-                Agrement CII
+                Agr&eacute;ment CII
               </div>
               <h2 className="mb-4 text-2xl font-bold leading-tight text-white md:text-3xl lg:text-4xl">
-                Recuperez jusqu&apos;a 60% du cout de votre projet innovant
+                R&eacute;cup&eacute;rez 20% du co&ucirc;t de votre projet innovant
               </h2>
               <p className="mb-8 max-w-xl text-base leading-relaxed text-white/70 md:text-lg">
-                Grace au Credit Impot Innovation, vos projets de developpement
-                deviennent un investissement fiscal avantageux. Nous vous
-                accompagnons dans la constitution du dossier.
+                Gr&acirc;ce au Cr&eacute;dit Imp&ocirc;t Innovation, vos projets de
+                d&eacute;veloppement deviennent un investissement fiscal avantageux.
+                Taux port&eacute; &agrave; 35&nbsp;&agrave;&nbsp;40% en Corse et 60% en
+                outre-mer. Nous vous accompagnons dans la constitution du dossier.
               </p>
               <MagneticButton
                 href="/credit-impot-innovation"

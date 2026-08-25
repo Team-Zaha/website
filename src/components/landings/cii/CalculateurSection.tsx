@@ -7,15 +7,17 @@ import { SplitText } from "@/components/shared/SplitText";
 import { RevealOnScroll } from "@/components/shared/RevealOnScroll";
 
 const RATES = [
-  { name: "Métropole", rate: 0.2, color: "text-zaha-green", bg: "bg-zaha-green" },
-  { name: "Corse", rate: 0.4, color: "text-zaha-orange", bg: "bg-zaha-orange" },
-  { name: "Outre-mer", rate: 0.6, color: "text-zaha-green", bg: "bg-zaha-green" },
+  { name: "Métropole", rate: 0.2, label: "20%", color: "text-zaha-green", bg: "bg-zaha-green" },
+  { name: "Corse", rate: 0.4, label: "35 à 40%", color: "text-zaha-orange", bg: "bg-zaha-orange" },
+  { name: "Outre-mer", rate: 0.6, label: "60%", color: "text-zaha-green", bg: "bg-zaha-green" },
 ];
 
 const MIN = 10000;
 const MAX = 1000000;
 const STEP = 5000;
-const CREDIT_CAP = 400000;
+// Le CII plafonne l'assiette de dépenses éligibles à 400 000 € par an,
+// pas le crédit d'impôt lui-même.
+const ELIGIBLE_CAP = 400000;
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
@@ -111,7 +113,7 @@ export function CalculateurSection() {
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {RATES.map((r) => {
-                const credit = Math.min(Math.round(montant * r.rate), CREDIT_CAP);
+                const credit = Math.round(Math.min(montant, ELIGIBLE_CAP) * r.rate);
                 return (
                   <motion.div
                     key={r.name}
@@ -122,7 +124,7 @@ export function CalculateurSection() {
                       {r.name}
                     </p>
                     <p className="mt-1 text-xs text-zaha-black/30">
-                      Taux : {Math.round(r.rate * 100)}%
+                      Taux : {r.label}
                     </p>
                     <motion.p
                       key={credit}
@@ -136,9 +138,9 @@ export function CalculateurSection() {
                     <p className="mt-2 text-xs text-zaha-black/40">
                       de crédit d&#39;impôt
                     </p>
-                    {credit >= CREDIT_CAP && (
+                    {montant >= ELIGIBLE_CAP && (
                       <p className="mt-1 text-xs font-medium text-zaha-orange">
-                        Plafond atteint
+                        Assiette plafonnée à 400 000 €
                       </p>
                     )}
                   </motion.div>
@@ -154,9 +156,13 @@ export function CalculateurSection() {
               <span className="font-bold text-zaha-black">
                 {formatCurrency(montant)}
               </span>
-              , vous récupérez jusqu&#39;à{" "}
+              , vous récupérez{" "}
               <span className="font-bold text-zaha-green">
-                {formatCurrency(Math.min(Math.round(montant * 0.6), CREDIT_CAP))}
+                {formatCurrency(Math.round(Math.min(montant, ELIGIBLE_CAP) * 0.2))}
+              </span>{" "}
+              en métropole, et jusqu&#39;à{" "}
+              <span className="font-bold text-zaha-green">
+                {formatCurrency(Math.round(Math.min(montant, ELIGIBLE_CAP) * 0.6))}
               </span>{" "}
               en outre-mer.
             </p>

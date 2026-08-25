@@ -92,7 +92,7 @@ const propositions = [
     label: "d'economie possible",
     title: "Agrement CII",
     description:
-      "Grace a notre agrement Credit Impot Innovation, recuperez de 20% a 60% du cout de vos projets innovants. Un avantage fiscal concret et immediat.",
+      "Grâce à notre agrément Crédit Impôt Innovation, récupérez 20% du coût de vos projets innovants — jusqu'à 60% en outre-mer. Un avantage fiscal concret et immédiat.",
     icon: (
       <svg
         width="40"

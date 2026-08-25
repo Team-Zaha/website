@@ -127,7 +127,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 1.1 }}
           className="mx-auto mt-6 max-w-xl text-base text-white/50 md:text-lg"
         >
-          Recevez 20% à 60% du coût de votre projet logiciel innovant en crédits d&#39;impôt grâce au Crédit Impôt Innovation.
+          Recevez 20% du coût de votre projet logiciel innovant en crédit d&#39;impôt grâce au Crédit Impôt Innovation — jusqu&#39;à 60% si votre entreprise est domiciliée en outre-mer.
         </motion.p>
 
         {/* Scroll indicator */}

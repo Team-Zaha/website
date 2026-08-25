@@ -21,13 +21,13 @@ interface StackBlockData {
 const stackBlocks: StackBlockData[] = [
   {
     name: "Vercel / Digital Ocean",
-    description: "Deploiement instantane, scaling automatique",
+    description: "Déploiement instantané, scaling automatique",
     color: "var(--zaha-black)",
     textColor: "#ffffff",
   },
   {
     name: "TypeScript",
-    description: "Fiabilite et maintenabilite du code",
+    description: "Fiabilité et maintenabilité du code",
     color: "var(--zaha-green)",
     textColor: "#ffffff",
   },

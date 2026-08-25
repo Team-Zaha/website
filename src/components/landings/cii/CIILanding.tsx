@@ -6,6 +6,7 @@ import { CommentCaMarcheSection } from "./CommentCaMarcheSection";
 import { EligibiliteSection } from "./EligibiliteSection";
 import { CasConcretSection } from "./CasConcretSection";
 import { CalculateurSection } from "./CalculateurSection";
+import { FaqCII } from "./FaqCII";
 import { CTASection } from "./CTASection";
 
 const navLinks = [
@@ -23,6 +24,7 @@ export function CIILanding() {
       <EligibiliteSection />
       <CasConcretSection />
       <CalculateurSection />
+      <FaqCII />
       <CTASection />
     </LandingLayout>
   );

@@ -68,7 +68,7 @@ const phases: Phase[] = [
     title: "Launch & Iterate",
     duration: "En continu",
     description:
-      "Deploiement, monitoring, iterations utilisateurs. Le produit vit et s'ameliore.",
+      "Déploiement, monitoring, itérations utilisateurs. Le produit vit et s'améliore.",
     icon: (
       <svg
         width="32"
@@ -106,7 +106,7 @@ export function ApprocheMVPSection() {
             Notre approche MVP
           </h2>
           <p className="mb-16 max-w-xl text-lg text-white/60">
-            Un processus eprouve pour aller vite sans sacrifier la qualite.
+            Un processus &eacute;prouv&eacute; pour aller vite sans sacrifier la qualit&eacute;.
           </p>
         </RevealOnScroll>
 

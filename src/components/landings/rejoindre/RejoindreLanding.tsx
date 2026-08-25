@@ -7,6 +7,7 @@ import { ServicesTimeline } from "./ServicesTimeline";
 import { PetitsPlusSection } from "./PetitsPlusSection";
 import { EquipeSection } from "./EquipeSection";
 import { StepperSection } from "./StepperSection";
+import { FaqRejoindre } from "./FaqRejoindre";
 import { ContactSection } from "./ContactSection";
 
 const navLinks = [
@@ -25,6 +26,7 @@ export function RejoindreLanding() {
       <PetitsPlusSection />
       <EquipeSection />
       <StepperSection />
+      <FaqRejoindre />
       <ContactSection />
     </LandingLayout>
   );

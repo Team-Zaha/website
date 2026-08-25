@@ -21,7 +21,7 @@ const projects: Project[] = [
   {
     name: "Livemeup",
     description:
-      "Application web sur mesure de gestion d'evenements live avec streaming integre.",
+      "Application web sur mesure de gestion d'évènements live avec streaming intégré.",
     tags: ["Next.js", "Node.js", "WebSocket", "Sur mesure"],
   },
   {
@@ -33,7 +33,7 @@ const projects: Project[] = [
   {
     name: "Feel Food",
     description:
-      "Notre propre startup ! Incubateur de food trucks. Cree de zero, pivote, et lance.",
+      "Notre propre startup ! Incubateur de food trucks. Créé de zéro, pivoté, et lancé.",
     tags: ["Startup", "React", "Node.js", "Notre creation"],
     highlight: true,
   },

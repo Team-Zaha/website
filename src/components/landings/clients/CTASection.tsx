@@ -75,7 +75,7 @@ export function CTASection() {
 
         <RevealOnScroll delay={0.6}>
           <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-white/50 md:text-xl">
-            Decrivez-nous votre besoin et recevez une proposition d&apos;equipe
+            D&eacute;crivez-nous votre besoin et recevez une proposition d&apos;&eacute;quipe
             sur mesure sous 48h.
           </p>
         </RevealOnScroll>
@@ -93,7 +93,7 @@ export function CTASection() {
 
         <RevealOnScroll delay={1}>
           <p className="mt-8 text-sm text-white/30">
-            Reponse garantie sous 48h — Devis gratuit et sans engagement
+            R&eacute;ponse garantie sous 48h — Devis gratuit et sans engagement
           </p>
         </RevealOnScroll>
       </div>

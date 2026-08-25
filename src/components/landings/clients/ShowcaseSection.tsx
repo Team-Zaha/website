@@ -28,7 +28,7 @@ const projects = [
   {
     name: "Espace Aubade",
     stack: "React",
-    description: "Lead d'une equipe de 6 developpeurs frontend sur l'e-commerce salle de bain",
+    description: "Lead d'une équipe de 6 développeurs frontend sur l'e-commerce salle de bain",
     color: "bg-zaha-green-light",
     accent: "text-zaha-green-light",
     tagBg: "bg-zaha-green-light/10",

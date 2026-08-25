@@ -10,10 +10,10 @@ const propositions = [
   {
     number: 18,
     suffix: "+",
-    label: "ans d'experience",
-    title: "Collectif d'experts selectionnes",
+    label: "ans d'expérience",
+    title: "Collectif d'experts sélectionnés",
     description:
-      "Notre fondateur capitalise sur plus de 18 ans d'experience dans le developpement web. Chaque expert est selectionne pour son excellence technique et son pragmatisme.",
+      "Notre fondateur capitalise sur plus de 18 ans d'expérience dans le développement web. Chaque expert est sélectionné pour son excellence technique et son pragmatisme.",
     icon: (
       <svg
         width="40"
@@ -38,7 +38,7 @@ const propositions = [
     label: "technologies cles",
     title: "Stack moderne et performante",
     description:
-      "React, Next.js, Node.js, TypeScript : nous maitrisons les technologies qui propulsent les applications web les plus exigeantes.",
+      "React, Next.js, Node.js, TypeScript : nous maîtrisons les technologies qui propulsent les applications web les plus exigeantes.",
     icon: (
       <svg
         width="40"
@@ -89,8 +89,8 @@ const propositions = [
   {
     number: 60,
     suffix: "%",
-    label: "d'economie possible",
-    title: "Agrement CII",
+    label: "d'économie possible",
+    title: "Agrément CII",
     description:
       "Grâce à notre agrément Crédit Impôt Innovation, récupérez 20% du coût de vos projets innovants — jusqu'à 60% en outre-mer. Un avantage fiscal concret et immédiat.",
     icon: (
@@ -116,9 +116,9 @@ const propositions = [
     number: 100,
     suffix: "%",
     label: "remote",
-    title: "Flexibilite et equipes sur mesure",
+    title: "Flexibilité et équipes sur mesure",
     description:
-      "Equipes 100% remote, dimensionnees selon vos besoins. Nous nous adaptons a votre organisation pour une integration fluide et efficace.",
+      "Équipes 100% remote, dimensionnées selon vos besoins. Nous nous adaptons à votre organisation pour une intégration fluide et efficace.",
     icon: (
       <svg
         width="40"

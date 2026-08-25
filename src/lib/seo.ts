@@ -15,20 +15,45 @@ export const LINKEDIN_URL = "https://www.linkedin.com/in/yann-lombard/";
 
 export interface RouteInfo {
   path: string;
+  label: string;
   priority: number;
   changeFrequency: "weekly" | "monthly" | "yearly";
 }
 
-/** Source unique de vérité pour le sitemap et le maillage interne. */
+/** Source unique de vérité pour le sitemap, le footer et le menu mobile. */
 export const ROUTES: RouteInfo[] = [
-  { path: "/", priority: 1, changeFrequency: "monthly" },
-  { path: "/clients", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/credit-impot-innovation", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/rejoindre", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/industrie", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/luxe-ecommerce", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/startup", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/contact", priority: 0.6, changeFrequency: "yearly" },
+  { path: "/", label: "Accueil", priority: 1, changeFrequency: "monthly" },
+  { path: "/clients", label: "Pour les clients", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/competences", label: "Nos compétences", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/credit-impot-innovation", label: "Crédit Impôt Innovation", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/rejoindre", label: "Rejoindre le collectif", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/a-propos", label: "À propos", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/industrie", label: "Industrie & zones blanches", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/luxe-ecommerce", label: "Luxe & e-commerce", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/startup", label: "Startups & MVP", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/contact", label: "Contact", priority: 0.6, changeFrequency: "yearly" },
+];
+
+const route = (path: string): RouteInfo => {
+  const found = ROUTES.find((r) => r.path === path);
+  if (!found) throw new Error(`Route inconnue : ${path}`);
+  return found;
+};
+
+/** Regroupement utilisé par le footer et le menu mobile. */
+export const NAV_GROUPS: { title: string; links: RouteInfo[] }[] = [
+  {
+    title: "Expertises",
+    links: [route("/competences"), route("/clients"), route("/credit-impot-innovation")],
+  },
+  {
+    title: "Secteurs",
+    links: [route("/industrie"), route("/luxe-ecommerce"), route("/startup")],
+  },
+  {
+    title: "Le collectif",
+    links: [route("/a-propos"), route("/rejoindre"), route("/contact")],
+  },
 ];
 
 /**

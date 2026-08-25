@@ -128,8 +128,8 @@ export function ContactLanding() {
 
             <RevealOnScroll delay={0.6}>
               <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-white/50 md:text-xl">
-                Une question, un projet, une envie de collaborer ? Ecrivez-nous,
-                on vous repond sous 48h.
+                Une question, un projet, une envie de collaborer ? &Eacute;crivez-nous,
+                on vous r&eacute;pond sous 48h.
               </p>
             </RevealOnScroll>
           </div>
@@ -176,7 +176,7 @@ export function ContactLanding() {
 
           <RevealOnScroll delay={1.5}>
             <p className="mt-8 text-center text-sm text-white/30">
-              Reponse garantie sous 48h
+              R&eacute;ponse garantie sous 48h
             </p>
           </RevealOnScroll>
         </div>

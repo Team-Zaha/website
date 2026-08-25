@@ -9,7 +9,7 @@ const services = [
   {
     title: "UX / UI Design",
     description:
-      "Conception d'interfaces utilisateur centrees sur l'experience, le design system et la conversion.",
+      "Conception d'interfaces utilisateur centrées sur l'expérience, le design system et la conversion.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M16 4h-4a4 4 0 000 8h4V4z" stroke="currentColor" strokeWidth="1.5" />
@@ -22,7 +22,7 @@ const services = [
     color: "text-zaha-orange",
   },
   {
-    title: "Developpement React / TypeScript",
+    title: "Développement React / TypeScript",
     description:
       "Applications web performantes, maintenables et scalables avec React et TypeScript.",
     icon: (
@@ -36,7 +36,7 @@ const services = [
     color: "text-zaha-green",
   },
   {
-    title: "Developpement Next.js",
+    title: "Développement Next.js",
     description:
       "Sites et applications Next.js optimises : SSR, SSG, ISR, App Router, performances et SEO.",
     icon: (
@@ -56,7 +56,7 @@ const services = [
     color: "text-zaha-black",
   },
   {
-    title: "Developpement backend Node.js",
+    title: "Développement backend Node.js",
     description:
       "APIs robustes, microservices, architectures scalables avec Node.js et l'ecosysteme JavaScript.",
     icon: (
@@ -67,7 +67,7 @@ const services = [
     color: "text-zaha-green",
   },
   {
-    title: "Developpement React Native",
+    title: "Développement React Native",
     description:
       "Applications mobiles cross-platform iOS et Android avec une codebase unique.",
     icon: (
@@ -83,7 +83,7 @@ const services = [
     color: "text-zaha-orange",
   },
   {
-    title: "Developpement d'applications Shopify",
+    title: "Développement d'applications Shopify",
     description:
       "Applications custom, extensions et storefronts headless sur mesure pour l'ecosysteme Shopify.",
     icon: (
@@ -112,7 +112,7 @@ export function ServicesSection() {
         <RevealOnScroll delay={0.3}>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zaha-black/60">
             Du frontend au backend, du web au mobile, nous couvrons l&apos;ensemble
-            du spectre du developpement moderne.
+            du spectre du d&eacute;veloppement moderne.
           </p>
         </RevealOnScroll>
       </div>

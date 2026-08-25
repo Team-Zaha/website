@@ -84,7 +84,7 @@ export function CTASection() {
             className="mb-6 font-bold tracking-tight"
             style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.15 }}
           >
-            Pitchez-nous votre idee
+            Pitchez-nous votre id&eacute;e
           </h2>
           <p className="mb-12 text-lg text-white/60">
             30 minutes pour comprendre votre vision. Zero engagement, zero
@@ -145,7 +145,7 @@ export function CTASection() {
                     htmlFor="idea"
                     className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-white/40"
                   >
-                    Votre idee en 2 lignes
+                    Votre id&eacute;e en 2 lignes
                   </label>
                   <textarea
                     id="idea"
@@ -155,7 +155,7 @@ export function CTASection() {
                     value={formData.idea}
                     onChange={handleChange}
                     className="w-full resize-none rounded-xl border border-white/15 bg-white/5 px-5 py-3.5 text-white outline-none transition-colors placeholder:text-white/20 focus:border-zaha-green"
-                    placeholder="On veut creer une app qui..."
+                    placeholder="On veut créer une app qui..."
                   />
                 </div>
 

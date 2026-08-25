@@ -11,14 +11,14 @@ export function RealiteSection() {
 
       <div className="relative z-10 mx-auto max-w-4xl">
         <SplitText
-          text="On connait votre realite"
+          text="On connaît votre réalité"
           tag="h2"
           className="text-section-title mb-12 font-bold tracking-tight"
           staggerChildren={0.04}
         />
 
         <SplitText
-          text="Budget serre. Deadline hier. Besoin de prouver le concept avant le prochain board."
+          text="Budget serré. Deadline hier. Besoin de prouver le concept avant le prochain board."
           tag="p"
           className="mb-8 text-xl font-light leading-relaxed text-white/80 md:text-2xl lg:text-3xl"
           staggerChildren={0.025}
@@ -26,7 +26,7 @@ export function RealiteSection() {
         />
 
         <SplitText
-          text="On est passes par la. On a cree Feel Food, notre propre startup. On connait la pression, les pivots, les nuits blanches."
+          text="On est passés par là. On a créé Feel Food, notre propre startup. On connaît la pression, les pivots, les nuits blanches."
           tag="p"
           className="text-lg font-light leading-relaxed text-white/60 md:text-xl lg:text-2xl"
           staggerChildren={0.02}

@@ -1,8 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useScrollPerfMonitor } from "@/hooks/useScrollPerfMonitor";
 import Link from "next/link";
+import { SiteFooter } from "@/components/shared/SiteFooter";
+import { NAV_GROUPS } from "@/lib/seo";
 
 interface LandingLayoutProps {
   children: ReactNode;
@@ -18,6 +21,7 @@ export function LandingLayout({
   navLinks,
 }: LandingLayoutProps) {
   useScrollPerfMonitor();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div
@@ -66,9 +70,118 @@ export function LandingLayout({
           >
             Nous contacter
           </Link>
+
+          {/* Menu mobile : la navigation etait jusqu'ici inaccessible sous md */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="menu-mobile"
+            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors md:hidden ${
+              dark
+                ? "border-white/20 text-white"
+                : "border-zaha-black/15 text-zaha-black"
+            }`}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              {menuOpen ? (
+                <path
+                  d="M4 4l10 10M14 4L4 14"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              ) : (
+                <path
+                  d="M2 5h14M2 9h14M2 13h14"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              )}
+            </svg>
+          </button>
         </div>
       </nav>
-      {children}
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="menu-mobile"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: [0.33, 1, 0.68, 1] }}
+            className={`fixed inset-x-0 top-[60px] z-40 max-h-[calc(100svh-60px)] overflow-y-auto border-t px-6 py-8 md:hidden ${
+              dark
+                ? "border-white/10 bg-zaha-black"
+                : "border-zaha-black/10 bg-zaha-white"
+            }`}
+          >
+            {/* Ancres de la page courante */}
+            {navLinks && navLinks.length > 0 && (
+              <div className="mb-8">
+                <p
+                  className={`text-xs font-bold uppercase tracking-widest ${
+                    dark ? "text-white/40" : "text-zaha-black/40"
+                  }`}
+                >
+                  Sur cette page
+                </p>
+                <ul className="mt-3 space-y-2.5">
+                  {navLinks.map((item) => (
+                    <li key={item.href}>
+                      <a
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={`text-base font-medium ${
+                          dark ? "text-white/80" : "text-zaha-black/80"
+                        }`}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Navigation complete du site */}
+            <div className="space-y-8">
+              {NAV_GROUPS.map((group) => (
+                <div key={group.title}>
+                  <p
+                    className={`text-xs font-bold uppercase tracking-widest ${
+                      dark ? "text-white/40" : "text-zaha-black/40"
+                    }`}
+                  >
+                    {group.title}
+                  </p>
+                  <ul className="mt-3 space-y-2.5">
+                    {group.links.map((item) => (
+                      <li key={item.path}>
+                        <Link
+                          href={item.path}
+                          onClick={() => setMenuOpen(false)}
+                          className={`text-base font-medium ${
+                            dark ? "text-white/80" : "text-zaha-black/80"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <main>{children}</main>
+      <SiteFooter dark={dark} />
     </div>
   );
 }

@@ -73,7 +73,7 @@ export function LuxeHero() {
       >
         {/* Title with clip-path reveal — un seul H1 pour les trois lignes */}
         <h1>
-          <div className="overflow-hidden">
+          <span className="block overflow-hidden">
             <motion.span
               initial={{ clipPath: "inset(0 100% 0 0)" }}
               animate={{ clipPath: "inset(0 0% 0 0)" }}
@@ -89,9 +89,9 @@ export function LuxeHero() {
             >
               L&apos;exigence du luxe{" "}
             </motion.span>
-          </div>
+          </span>
 
-          <div className="overflow-hidden">
+          <span className="block overflow-hidden">
             <motion.span
               initial={{ clipPath: "inset(0 100% 0 0)" }}
               animate={{ clipPath: "inset(0 0% 0 0)" }}
@@ -107,9 +107,9 @@ export function LuxeHero() {
             >
               mérite une ingénierie{" "}
             </motion.span>
-          </div>
+          </span>
 
-          <div className="overflow-hidden">
+          <span className="block overflow-hidden">
             <motion.span
               initial={{ clipPath: "inset(0 100% 0 0)" }}
               animate={{ clipPath: "inset(0 0% 0 0)" }}
@@ -125,7 +125,7 @@ export function LuxeHero() {
             >
               d&apos;exception
             </motion.span>
-          </div>
+          </span>
         </h1>
 
         {/* Thin line */}

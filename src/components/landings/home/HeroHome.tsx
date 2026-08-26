@@ -15,9 +15,12 @@ function ClipReveal({
   delay?: number;
   className?: string;
 }) {
+  // Rendu en <span className="block"> et non en <div> : ce composant n'est
+  // utilisé qu'à l'intérieur du <h1>, qui n'accepte que du contenu phrasing.
   return (
-    <div className={`overflow-hidden ${className ?? ""}`}>
-      <motion.div
+    <span className={`block overflow-hidden ${className ?? ""}`}>
+      <motion.span
+        className="block"
         initial={{ y: "110%" }}
         animate={{ y: "0%" }}
         transition={{
@@ -27,8 +30,8 @@ function ClipReveal({
         }}
       >
         {children}
-      </motion.div>
-    </div>
+      </motion.span>
+    </span>
   );
 }
 
@@ -199,7 +202,7 @@ export function HeroHome() {
       >
         {/* Massive editorial typography — H1 de la page */}
         <h1>
-          <div>
+          <span className="block">
             {/* Line 1: TECH & — filled white */}
             <ClipReveal delay={0.2}>
               <span className="hero-display block font-black uppercase leading-[0.85] tracking-[-0.04em] text-white">
@@ -213,7 +216,7 @@ export function HeroHome() {
                 CR&Eacute;ATIFS,{" "}
               </span>
             </ClipReveal>
-          </div>
+          </span>
 
           {/* Line 3: AU COLLECTIF. — outlined / stroke */}
           <ClipReveal delay={0.5}>

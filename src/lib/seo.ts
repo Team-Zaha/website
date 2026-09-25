@@ -11,7 +11,7 @@ export const SITE_NAME = "Zaha";
 export const SITE_LOCALE = "fr_FR";
 
 export const CONTACT_EMAIL = "bonjour@zaha.fr";
-export const LINKEDIN_URL = "https://www.linkedin.com/in/yann-lombard/";
+export const LINKEDIN_URL = "https://www.linkedin.com/in/yannlombard/";
 
 export interface RouteInfo {
   path: string;

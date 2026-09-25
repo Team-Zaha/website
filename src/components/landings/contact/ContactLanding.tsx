@@ -7,6 +7,7 @@ import { SplitText } from "@/components/shared/SplitText";
 import { RevealOnScroll } from "@/components/shared/RevealOnScroll";
 import { MagneticButton } from "@/components/shared/MagneticButton";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { LINKEDIN_URL } from "@/lib/seo";
 
 const contactInfo = [
   {
@@ -32,7 +33,7 @@ const contactInfo = [
   {
     label: "LinkedIn",
     value: "Yann Lombard",
-    href: "https://www.linkedin.com/in/yann-lombard/",
+    href: LINKEDIN_URL,
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

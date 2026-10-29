@@ -1,6 +1,6 @@
 # Zaha
 
-**Société de services du numérique (SASU) spécialisée dans l'architecture logicielle et le développement web avancé**
+**Société de services du numérique (EURL) spécialisée dans l'architecture logicielle et le développement web avancé**
 
 - Fondée en **juillet 2020** par Yann Lombard
 - SIREN : 887 514 982

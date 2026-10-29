@@ -241,6 +241,21 @@ export function ContactSection() {
                 </p>
               )}
 
+              {/* Information RGPD, lue avant l'envoi. Nouvel onglet : la
+                  navigation viderait le formulaire en cours. */}
+              <p className="text-center text-xs leading-relaxed text-zaha-black/50">
+                Tes données servent uniquement à étudier ta candidature et à te
+                recontacter.{" "}
+                <a
+                  href="/mentions-legales#donnees-personnelles"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-zaha-black"
+                >
+                  En savoir plus
+                </a>
+              </p>
+
               {/* Submit */}
               <div className="flex justify-center pt-2">
                 <motion.button

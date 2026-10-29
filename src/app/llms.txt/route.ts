@@ -1,4 +1,4 @@
-import { ROUTES, SITE_URL, CONTACT_EMAIL } from "@/lib/seo";
+import { ROUTES, SITE_URL, CONTACT_EMAIL, LEGAL } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-static";
  * (ChatGPT, Claude, Perplexity...). Format : https://llmstxt.org
  */
 export function GET() {
-  const pages = ROUTES.filter((r) => r.path !== "/")
+  const pages = ROUTES.filter((r) => r.path !== "/" && r.llms !== false)
     .map((r) => `- [${r.label}](${SITE_URL}${r.path})`)
     .join("\n");
 
@@ -17,11 +17,11 @@ export function GET() {
 
 ## Identité
 
-- Raison sociale : Zaha (SASU)
-- SIREN : 887 514 982
-- Code NAF : 6202A — Conseil en systèmes et logiciels informatiques
-- Siège : 138 avenue des Frères Lumière, 69008 Lyon, France
-- Fondation : juillet 2020, par Yann Lombard (ingénieur web, 18+ ans d'expérience)
+- Raison sociale : ${LEGAL.name}, ${LEGAL.form}, capital ${LEGAL.capital}
+- SIREN : ${LEGAL.sirenDisplay}
+- Code NAF : ${LEGAL.naf} — ${LEGAL.nafLabel}
+- Siège : ${LEGAL.street}, ${LEGAL.postalCode} ${LEGAL.city}, France
+- Fondation : juillet 2020, par ${LEGAL.director} (ingénieur web, 18+ ans d'expérience)
 - Contact : ${CONTACT_EMAIL}
 
 ## Modèle

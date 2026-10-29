@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { NAV_GROUPS, CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/seo";
+import { NAV_GROUPS, CONTACT_EMAIL, LINKEDIN_URL, LEGAL, route } from "@/lib/seo";
+
+const MENTIONS = route("/mentions-legales");
 
 /**
  * Footer commun à toutes les pages. Il porte le maillage interne du site :
@@ -31,9 +33,9 @@ export function SiteFooter({ dark = false }: { dark?: boolean }) {
               développement web. Société agréée Crédit Impôt Innovation.
             </p>
             <address className={`mt-4 text-sm not-italic ${muted}`}>
-              138 avenue des Frères Lumière
+              {LEGAL.street}
               <br />
-              69008 Lyon, France
+              {LEGAL.postalCode} {LEGAL.city}, France
             </address>
           </div>
 
@@ -65,8 +67,14 @@ export function SiteFooter({ dark = false }: { dark?: boolean }) {
         <div
           className={`mt-14 flex flex-col gap-4 border-t ${border} pt-8 text-sm ${muted} sm:flex-row sm:items-center sm:justify-between`}
         >
-          <p>&copy; {year} Zaha. Tous droits réservés. SIREN 887 514 982.</p>
-          <div className="flex items-center gap-6">
+          <p>
+            &copy; {year} {LEGAL.name}. Tous droits réservés. SIREN{" "}
+            {LEGAL.sirenDisplay}.
+          </p>
+          <div className="flex flex-wrap items-center gap-6">
+            <Link href={MENTIONS.path} className={`transition-colors ${link}`}>
+              {MENTIONS.label}
+            </Link>
             <a href={`mailto:${CONTACT_EMAIL}`} className={`transition-colors ${link}`}>
               {CONTACT_EMAIL}
             </a>

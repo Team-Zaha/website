@@ -17,13 +17,31 @@ const FENETRE_MS = 60_000;
 const MAX_PAR_FENETRE = 3;
 const envois = new Map<string, number[]>();
 
+/** Horodatages de l'IP encore dans la fenêtre. */
+function recents(ip: string, maintenant: number) {
+  return (envois.get(ip) ?? []).filter((t) => maintenant - t < FENETRE_MS);
+}
+
 function tropDeRequetes(ip: string) {
   const maintenant = Date.now();
-  const recents = (envois.get(ip) ?? []).filter((t) => maintenant - t < FENETRE_MS);
-  if (recents.length >= MAX_PAR_FENETRE) return true;
-  recents.push(maintenant);
-  envois.set(ip, recents);
+  const dansFenetre = recents(ip, maintenant);
+  if (dansFenetre.length >= MAX_PAR_FENETRE) return true;
+  dansFenetre.push(maintenant);
+  envois.set(ip, dansFenetre);
+  oublierPlusTard(ip);
   return false;
+}
+
+/**
+ * Efface l'IP une fois sa fenêtre échue, sans attendre une autre requête :
+ * les mentions légales promettent qu'elle n'est pas conservée.
+ */
+function oublierPlusTard(ip: string) {
+  setTimeout(() => {
+    const encore = recents(ip, Date.now());
+    if (encore.length > 0) envois.set(ip, encore);
+    else envois.delete(ip);
+  }, FENETRE_MS + 1_000).unref?.();
 }
 
 function nettoyer(valeur: unknown, max: number) {

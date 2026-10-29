@@ -13,11 +13,34 @@ export const SITE_LOCALE = "fr_FR";
 export const CONTACT_EMAIL = "bonjour@zaha.fr";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/yannlombard/";
 
+/** Identité légale (mentions légales, données structurées). Source : RNE. */
+// Espaces insécables : ces valeurs ne doivent pas être coupées en fin de ligne.
+const SIREN = "887 514 982";
+
+export const LEGAL = {
+  name: "Zaha",
+  form: "EURL (SARL à associé unique)",
+  capital: "2 000 €",
+  /** SIREN formaté pour l'affichage ; `siren` sans espaces pour les données structurées. */
+  sirenDisplay: SIREN,
+  siren: SIREN.replace(/\s/g, ""),
+  rcsCity: "Lyon",
+  vat: "FR09887514982",
+  naf: "6202A",
+  nafLabel: "Conseil en systèmes et logiciels informatiques",
+  street: "138 avenue des Frères Lumière",
+  postalCode: "69008",
+  city: "Lyon",
+  director: "Yann Lombard",
+} as const;
+
 export interface RouteInfo {
   path: string;
   label: string;
   priority: number;
   changeFrequency: "weekly" | "monthly" | "yearly";
+  /** false : page utilitaire, exclue du résumé llms.txt. */
+  llms?: boolean;
 }
 
 /** Source unique de vérité pour le sitemap, le footer et le menu mobile. */
@@ -32,9 +55,10 @@ export const ROUTES: RouteInfo[] = [
   { path: "/luxe-ecommerce", label: "Luxe & e-commerce", priority: 0.7, changeFrequency: "monthly" },
   { path: "/startup", label: "Startups & MVP", priority: 0.7, changeFrequency: "monthly" },
   { path: "/contact", label: "Contact", priority: 0.6, changeFrequency: "yearly" },
+  { path: "/mentions-legales", label: "Mentions légales", priority: 0.1, changeFrequency: "yearly", llms: false },
 ];
 
-const route = (path: string): RouteInfo => {
+export const route = (path: string): RouteInfo => {
   const found = ROUTES.find((r) => r.path === path);
   if (!found) throw new Error(`Route inconnue : ${path}`);
   return found;

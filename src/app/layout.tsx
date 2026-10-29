@@ -6,6 +6,7 @@ import {
   SITE_LOCALE,
   CONTACT_EMAIL,
   LINKEDIN_URL,
+  LEGAL,
 } from "@/lib/seo";
 import "./globals.css";
 
@@ -82,22 +83,23 @@ const organizationJsonLd = {
   "@type": "ProfessionalService",
   "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
-  legalName: "Zaha",
+  legalName: LEGAL.name,
   url: SITE_URL,
   email: CONTACT_EMAIL,
+  vatID: LEGAL.vat,
   description: DESCRIPTION,
   foundingDate: "2020-07",
   founder: {
     "@type": "Person",
-    name: "Yann Lombard",
+    name: LEGAL.director,
     jobTitle: "Architecte logiciel, fondateur",
     sameAs: LINKEDIN_URL,
   },
   address: {
     "@type": "PostalAddress",
-    streetAddress: "138 avenue des Frères Lumière",
-    postalCode: "69008",
-    addressLocality: "Lyon",
+    streetAddress: LEGAL.street,
+    postalCode: LEGAL.postalCode,
+    addressLocality: LEGAL.city,
     addressCountry: "FR",
   },
   areaServed: [
@@ -105,8 +107,8 @@ const organizationJsonLd = {
     { "@type": "Place", name: "Europe" },
   ],
   identifier: [
-    { "@type": "PropertyValue", name: "SIREN", value: "887514982" },
-    { "@type": "PropertyValue", name: "Code NAF", value: "6202A" },
+    { "@type": "PropertyValue", name: "SIREN", value: LEGAL.siren },
+    { "@type": "PropertyValue", name: "Code NAF", value: LEGAL.naf },
   ],
   knowsAbout: [
     "Architecture logicielle",

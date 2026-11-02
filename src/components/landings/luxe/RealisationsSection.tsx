@@ -10,8 +10,8 @@ const realisations = [
     title: "Espace Aubade",
     role: "Lead React, équipe de 6 devs frontend",
     description:
-      "Plateforme e-commerce premium pour la marque de lingerie française. Direction technique frontend et coordination d\u2019une équipe de 6 développeurs pour une refonte complète de l\u2019expérience d\u2019achat en ligne.",
-    tags: ["React", "Next.js", "TypeScript", "E-commerce"],
+      "Espace pro e-commerce B2B du réseau Espace Aubade (sanitaire, carrelage, chauffage). Direction technique frontend et coordination d\u2019une équipe de 6 développeurs : catalogue relié à l\u2019ERP, devis, commandes et saisie rapide par scan de code-barres.",
+    tags: ["React", "JavaScript", "E-commerce B2B"],
   },
   {
     title: "E-commerce React / Shopify",
